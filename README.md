@@ -6,7 +6,7 @@
 
 This project was made during a course I took at my college.
 
-I had to learn HTML, CSS and JavaScript on my own which was very interesting and challenging but the progress just kept me want to improve it even further more.
+I had to learn HTML, CSS and JavaScript on my own which was very interesting and challenging, but the progress I made just kept me wanting to improve my code even more.
 
 
 
