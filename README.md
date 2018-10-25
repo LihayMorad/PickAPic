@@ -10,11 +10,10 @@ I had to learn HTML, CSS and JavaScript on my own which was very interesting and
 
 
 
-The client-side: HTML, CSS and JavaScript, jQuary, Ajax. API: Google Maps API.
+> The client-side: HTML, CSS and JavaScript, jQuary, Ajax. API: Google Maps API (plus 'Places' library).
 
 
-
-The server-side: C# (I used ASP .NET Web API with IIS Server)
+> The server-side: C# (I used ASP .NET Web API with IIS Server)
 
 
 
