@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+        <!-- Page settings -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Login Form Design</title>
+    <link rel="stylesheet" type="text/css" href="css/photoDetailsStyle.css">
+</head>
+<body>
+   
+    <div class="photoDetails">
+
+        <img src="Document-icon.png" class="avatar">
+        <h1>Upload Page</h1>
+        <form>
+            <p>Description</p>
+            <input type="text" id="photoDescription" name="" placeholder="Enter photo description">
+
+            <div id="filtersOptionsDiv">Choose photo filter:</div>
+            <select id="filtersOptions" name="filtersOptions">
+                <option value="Panorama">Panorama</option>
+                <option value="Sunrise">Sunrise</option>
+                <option value="Sea">Sea</option>
+                <option value="River">River</option>
+                <option value="Grass">Grass</option>
+                <option value="Flowers">Flowers</option>
+                <option value="Other" selected>Other</option> <!-- Default filter -->
+              </select>
+
+            <input type="button" id="btnUpload" name="" value="Upload">
+
+            <div id="divError" class="alert">
+                <div id="divErrorText"></div>
+            </div>
+        </form>
+    </div>
+
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            // Save the new user details
+            $('#btnUpload').click(function () {
+                $.ajax({
+                    url: 'description',
+                    method: 'POST',
+                    data: {
+                        description: $('#photoDescription').val(),
+                        filter: $('#filtersOptions').val(),
+                    },
+                    success: function (data) {
+                        alert("Succesfully upload!");
+                        window.location.href = 'Index.html';
+                    },
+                    error: function (jqXHR, responseText, errorThrown) {
+                        $('#divErrorText').text("ERROR!!")
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
