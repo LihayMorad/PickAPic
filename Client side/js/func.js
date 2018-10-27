@@ -21,7 +21,6 @@ function selectOnOption() {
         // console.log("inside if");
         countCheckboxes = 0;
         checkboxAll.checked = true;
-        // toggleAllFilters();
     }
     else {
         // console.log("inside else");
@@ -72,19 +71,10 @@ $(document).ready(function () {
         contentType: false,
         processData: false,
         success: function (data) {
-            // alert("User Has cookie JS");
-            // alert(data[0]); // sessionID
-            // alert(data[1]); // username
-            // alert(data[2]); 
-            // window.location.href = 'Index.html';
             var loginBtn = document.getElementById("loginButton");
             loginBtn.innerHTML = "<i class=\"fas fa-user-check\"></i> Logged in as " + data[1];
         },
         error: function (jqXHR, responseText, errorThrown, data) {
-            // alert("responseText: " + responseText);
-            // alert("errorThrown: " + errorThrown);
-            // alert(data[2]);
-            // window.location.href = 'Index.html';
         }
     });
 })
@@ -150,9 +140,6 @@ function findme() {
                 };
 
                 currUserCoords = pos;
-                // Prints current coords to console
-                // console.log('Your current position is:');
-                // console.log(pos);
 
                 MyLocationinfoWindow.setPosition(pos);
                 MyLocationinfoWindow.setContent('<div style="width:180px; text-align: right;">Your Approximate location.</div>');
@@ -208,9 +195,9 @@ function initMap() {
         rotateControl: true,
     }
 
-    // Map initialize with the options above
+    // Map initialization
     map = new google.maps.Map(document.getElementById('map'), options);
-    MyLocationinfoWindow = new google.maps.InfoWindow; // Approximate location Info Window
+    MyLocationinfoWindow = new google.maps.InfoWindow; // User's approximate location Info Window
 
     oms = new OverlappingMarkerSpiderfier(map, {
         markersWontMove: true,   // we promise not to move any markers, allowing optimizations
@@ -237,7 +224,6 @@ function initMap() {
     // Create the search box and link it to the UI element.
     var input = document.getElementById('searchInputAutoComplete');
     var searchBox = new google.maps.places.SearchBox(input);
-    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     // Bias the SearchBox results towards current map's viewport.
     map.addListener('bounds_changed', function () {
@@ -247,30 +233,18 @@ function initMap() {
     // Idle map listener 
     map.addListener('idle', function () {
         // console.log("inside: idle");
-        // console.log("filtersChanged: "+ filtersChanged());
 
         var mapBounds = map.getBounds();
         var ne = mapBounds.getNorthEast();
         var sw = mapBounds.getSouthWest();
-        // console.log("NorthEast: (lat: " + ne.lat() + ", lng: " + ne.lng());
-        // console.log("SouthWest: (lat: " + sw.lat() + ", lng: " + sw.lng());
 
         var center = map.getCenter();
-        // console.log("Center: " + center);
-
-        // var currPos = { lat: 0, lng: 0 };
 
         var radius = radiusSearch.value / 111; // kilometer converted to coordinates
 
         if (radius) { // User has provided radius
             if (locationGranted) { // Able to find location
-                // navigator.geolocation.getCurrentPosition(function (position) {
 
-                //     currPos = {
-                //         lat: position.coords.latitude,
-                //         lng: position.coords.longitude
-                //     };
-                // http://localhost/webapplication1/api/numOfPhotos
                 $.getJSON("http://localhost/webapplication1/api/numOfPhotos",
                     { neX: ne.lat(), neY: ne.lng(), swX: sw.lat(), swY: sw.lng(), rad: radius, centerX: currUserCoords.lat, centerY: currUserCoords.lng }, function (data) {
                         addMarkers(data);
@@ -284,11 +258,6 @@ function initMap() {
                     { neX: ne.lat(), neY: ne.lng(), swX: sw.lat(), swY: sw.lng(), rad: radius, centerX: 0, centerY: 0 }, function (data) {
                         addMarkers(data);
                     });
-                // radius = 0;
-                // $.getJSON("http://localhost/webapplication1/api/numOfPhotos",
-                //     { neX: ne.lat(), neY: ne.lng(), swX: sw.lat(), swY: sw.lng(), rad: radius, centerX: 0, centerY: 0 }, function (data) {
-                //         addMarkers(data);
-                //     });
             }
         }
         else { // User hasn't provided radius
@@ -296,17 +265,10 @@ function initMap() {
                 { neX: ne.lat(), neY: ne.lng(), swX: sw.lat(), swY: sw.lng(), rad: radius, centerX: 0, centerY: 0 }, function (data) {
                     addMarkers(data);
                 });
-            // $.getJSON("http://localhost/webapplication1/api/numOfPhotos",
-            // { neX: ne.lat(), neY: ne.lng(), swX: sw.lat(), swY: sw.lng(), rad: radius, centerX: currUserCoords.lat, centerY: currUserCoords.lng }, function (data) {
-            //     addMarkers(data);
-            // });
         }
 
         function addMarkers(data) {
             console.table(data);
-            // console.log("Data length: " + data.length);
-            // console.log("Data[0]: " + data[0]);
-            // console.log("Data[0].id: " + data[0].id);
 
             // delete all previous photo markers
             markersArray.forEach(function (photoMarker) {
@@ -315,26 +277,21 @@ function initMap() {
 
             markerCluster.clearMarkers();
 
-            var imageURL = newFunction(); /// REALLY NEED TO DO IT THIS WAY ?
-            // console.log("# of images in server: " + data.length);
-            for (var i = 0; i < data.length; i++) {  /// should be <= (starts from 1)
-                // console.log("Iteration #" + (i + 1) + "[Index #" + i + "]");
+            var imageURL = newFunction(); 
+            for (var i = 0; i < data.length; i++) {
 
-                if (currentCheckedFiltersValues.includes(data[i].filters)) { // should also work: "if (currentCheckedFiltersValues.indexOf(data[i].filters) != -1)"
+                if (currentCheckedFiltersValues.includes(data[i].filters)) {
                     imageURL = "http://localhost/webapplication1/api/image/" + data[i].id; //  PICTURE
                     imageThumbnailURL = "http://localhost/webapplication1/api/image/" + "thumbnail_" + data[i].id; // THUMBNAIL PICTURE
-
-                    // console.log("imageURL: " + imageURL);
-                    // console.log("imageThumbnailURL: " + imageThumbnailURL);
 
                     var newMarker = new google.maps.Marker({
                         position: {
                             lat: data[i].lat,
                             lng: data[i].lng,
                         },
-                        title: "Filter: " + data[i].filters, // @@@@@@@@ Should be the name of the place
+                        title: "Filter: " + data[i].filters,
                         icon: {
-                            url: imageThumbnailURL, // url
+                            url: imageThumbnailURL,
                             origin: new google.maps.Point(0, 0),
                             anchor: new google.maps.Point(0, 50)
                         },
@@ -345,14 +302,6 @@ function initMap() {
                     oms.addMarker(newMarker); // push every photo marker into the SpiderfierArray
                     markerCluster.addMarker(newMarker); // push every photo marker into the markersClusterArray
 
-                    // @@@@@@ When we hover at a marker he bounces
-                    // newMarker.addListener('mouseover', function() {
-                    //     this.setAnimation(google.maps.Animation.BOUNCE);
-                    // });
-                    // newMarker.addListener('mouseout', function() {
-                    //     this.setAnimation(null);
-                    // });
-
                     google.maps.event.addListener(newMarker, 'spider_click', function (event) {
                         console.log("inside someMarker Listener");
                         var selectedMarker = this;
@@ -360,7 +309,6 @@ function initMap() {
                         console.log("selectedMarker url: " + selectedMarker.markerId);
 
                         $.getJSON("http://localhost/webapplication1/api/photodetails/" + selectedMarker.markerId, function (photoData) {
-                            // console.table(photoData);
                             photoDetailsSet(photoData);
                         });
 
@@ -371,37 +319,22 @@ function initMap() {
                             var modalIMGMarker = document.getElementById("modalIMG");
                             var modalIMGuploadDate = document.getElementById("uploadDateIMGspan");
                             var modalIMGuserName = document.getElementById("userNameIMGspan");
-                            // var modalIMGfilters = document.getElementById("filtersIMGspan");
-
-                            console.table(photoDataRow);
-                            console.log("Description: " + photoDataRow[0].description);
-                            console.log("uploaddate: " + photoDataRow[0].uploaddate);
-                            console.log("userName: " + photoDataRow[0].username);
-                            // console.log("userName: " + photoDataRow[0].filters);
 
                             // function getUserGallery(usr) {alert("test");}
                             modalIMGMarker.setAttribute("src", modalIMGURL);
                             modalIMGdescription.innerHTML = photoDataRow[0].description;
                             modalIMGuploadDate.innerHTML = photoDataRow[0].uploaddate;
                             modalIMGuserName.innerHTML = '<a onClick="getUserGallery(' + photoDataRow[0].username + ');">' + photoDataRow[0].username + '</a>';
-                            // modalIMGfilters.innerHTML = photoDataRow[0].filters;
                         }
 
-                        // jQuery.noConflict(); // NEEDED IF WE USE MORE THAN ! jQuary LIBRARY
-                        // console.log("BEFORE MODAL SHOW");
                         $('#exampleModalCenter').modal('show');
-                        // console.log("AFTER MODAL SHOW");
 
                     });
                 };
             }
-            // markerCluster.addMarkers(markersArray);
         }
 
-        // console.log("AFTER JSON");
-
     });
-
 
 
     var markers = [];
@@ -451,8 +384,6 @@ function newFunction() {
 
 ///// Picture Upload
 
-// <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
-
 function pictureUploadbtn() {
     console.log("inside: pictureUpload");
     // Save the new user details
@@ -464,7 +395,7 @@ function pictureUploadbtn() {
     if (files.length > 0) {
         data.append("UploadedImage", files[0]);
     }
-    //////////////////////////////////////////////////////////////////////////////////
+
     $.ajax({
         url: 'Upload',
         method: 'POST',
@@ -480,11 +411,9 @@ function pictureUploadbtn() {
                 data: data,
                 success: function (datain) {
                     alert(datain[0]);
-                    //sessionStorage.setItem("picID", datain[1]);
                     window.location.href = 'photoDetails.html';
                 },
                 error: function (jqXHR, responseText, errorThrown) {
-                    //alert(datain[0]);
                     alert("no gps");
                     window.location.href = 'ManualGps.html';
                 }
