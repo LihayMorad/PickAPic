@@ -2,7 +2,6 @@
           height: 100%;
           margin: 0;
           padding: 0;
-          /* line-height: 1 !important; */
       }
 
       * {
@@ -210,21 +209,6 @@
       #searchInputAutoComplete:hover {
           border-color: #4d90fe;
       }
-
-      /* This Button Not in use for now
-      #searchInputAutoCompleteButton { 
-          margin-right: 8px;
-      } 
-      */
-
-      /* #title {
-          color: #fff;
-          background-color: #4d90fe;
-      }
-      
-      #target {
-          width: 345px;
-      } */
 
       .material-switch>input[type="checkbox"] {
           display: none;
