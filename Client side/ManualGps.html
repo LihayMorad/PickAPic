@@ -11,7 +11,6 @@
     <title>Login Form Design</title>
 
     <link rel="stylesheet" type="text/css" href="css/ManualGps.css">
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:500|Varela+Round">
 
 </head>
@@ -31,13 +30,12 @@
             </div>
         </form>
     </div>
-    <!-- <div id="map"></div> -->
+
     <script type="text/javascript" src="js/manualGps.js"></script>
     
     <!-- Google Map Places API include 'Places' library for Search Box's AutoComplete -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBODVwIapRzo89COfJVRlcZAwXBQKjh-ak&callback=initMap"
             async defer></script>
-
 
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script type="text/javascript">
@@ -49,8 +47,8 @@
                     url: 'location',
                     method: 'POST',
                     data: {
-                        lat: Lat,//32.0158,
-                        lng: Lng,//34.7874, //$('#txtUser').val(),
+                        lat: Lat,
+                        lng: Lng,
                     },
                     success: function (data) {
                         alert("Succesfully upload!");
@@ -58,7 +56,6 @@
                     },
                     error: function (jqXHR, responseText, errorThrown) {
                         $('#divErrorText').text("ERROR!!")
-                        //window.location.href = 'Index.html';
                     }
                 });
             });
