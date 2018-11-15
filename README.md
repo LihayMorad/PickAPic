@@ -40,6 +40,6 @@ Dependencies:
 [Rangeslider]: <http://rangeslider.js.org/>
 
 
-UI screenshots (main page):
+User Interface screenshots (main page):
 ![Main UI 1](/Screenshots/UI1.jpg "Main UI 1")
 ![Main UI 2](/Screenshots/UI2.jpg "Main UI 2")
