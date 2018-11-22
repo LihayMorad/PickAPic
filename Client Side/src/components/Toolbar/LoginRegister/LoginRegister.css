@@ -1,0 +1,10 @@
+#loginButton {
+    color: white;
+    box-shadow: 0 0 0.5px 0.6px #007bff;
+}
+
+#loginButton:hover {
+    border-color: white;
+    transition: 0.4s;
+    box-shadow: 0 0 0.5px 0.3px white;
+}

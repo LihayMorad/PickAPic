@@ -1,0 +1,15 @@
+#filtersDropdown {
+    min-width: 146px;
+    border: 1px solid #17a2b8;
+    padding-bottom: 1px;
+    padding-top: 4px;
+}
+
+.filtersDropdownLabel {
+    /* padding: 4px 12px !important; */
+    margin-bottom: 5px;
+}
+
+.filtersDropdownLabel:hover {
+    cursor: pointer;
+}
