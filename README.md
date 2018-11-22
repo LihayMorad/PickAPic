@@ -1,3 +1,4 @@
+** 21.11.18 Recreating all client side with ReactJS**
 # PickAPic
 
 ### A website for photographers to share and find hotspot photo locations.
