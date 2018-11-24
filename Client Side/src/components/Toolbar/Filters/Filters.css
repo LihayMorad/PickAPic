@@ -6,7 +6,8 @@
 }
 
 #searchCategoriesButton:hover {
-    transition: 0.4s
+    transition: 0.4s;
+    border-color: white;
 }
 
 .filtersDropdownLabel:hover,

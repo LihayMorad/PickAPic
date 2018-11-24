@@ -5,22 +5,10 @@ import './Toolbar.css';
 import Logo from './Logo/Logo';
 import SearchInput from './SearchInput/SearchInput';
 import Upload from './Upload/Upload';
-import LoginRegister from './LoginRegister/LoginRegister';
 import Filters from './Filters/Filters';
-import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    Nav,
-    NavItem,
-    NavLink,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Input,
-    Button
-} from 'reactstrap';
+import RadiusSlider from './RadiusSlider/RadiusSlider';
+import LoginRegister from './LoginRegister/LoginRegister';
+import { Collapse, Navbar, NavbarToggler, Nav, NavItem } from 'reactstrap';
 
 class Toolbar extends Component {
 
@@ -44,8 +32,7 @@ class Toolbar extends Component {
 
                 <Navbar color="dark" dark expand="xl" id="navbarMain">
 
-                    {/* LOGO */}
-                    {/* SHOULD BE RENDERED ON ALL PAGES */}
+                    {/* LOGO */} {/* SHOULD BE RENDRED ON ALL PAGES */}
                     <Logo />
 
                     <NavbarToggler onClick={this.toggle} />
@@ -63,15 +50,13 @@ class Toolbar extends Component {
 
                             {/* Categories (Filters) Button */}
                             <NavItem className="navBtn">
-                                {/* <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink> */}
                                 <Filters />
                             </NavItem>
 
 
                             {/* Search by radius */}
-                            {/* There is react slider in google */}
-                            <NavItem>
-
+                            <NavItem className="navBtn">
+                                <RadiusSlider />
                             </NavItem>
 
 
@@ -82,8 +67,7 @@ class Toolbar extends Component {
 
                         </Nav>
 
-                        {/* Login/Register Button  */}
-                        {/* SHOULD BE RENDRED ON ALL PAGES */}
+                        {/* Login/Register Button  */} {/* SHOULD BE RENDRED ON ALL PAGES */}
                         <NavItem className="navBtn">
                             <LoginRegister />
                         </NavItem>

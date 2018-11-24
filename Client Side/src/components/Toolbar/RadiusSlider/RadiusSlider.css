@@ -1,0 +1,46 @@
+#radius {
+    color: white;
+    margin-right: 8px;
+    width: 285px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-right: 10px;
+    padding-left: 15px;
+    background-color: transparent;
+    border: 1px solid #28a745;
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0.5px 0.3px #28a745;
+    display: flex;
+    align-items: center;
+}
+
+#radius:hover {
+    background-color: #28a745;
+    cursor: pointer;
+    transition: 0.4s;
+    border-color: white;
+}
+
+@media (max-width: 1200px){
+    #radius{
+        width: 300px;
+    }
+}
+
+/* #radiusSliderInput {
+    padding: 50px;
+} */
+
+#radiusSliderToggle {
+    color: white;
+    border-color: white;
+    height: 24px;
+    padding-top: 2px;
+    margin-left: 15px;
+    transition: 0.4s;
+}
+
+#radiusSliderToggle:hover {
+    color: black;
+    background-color: white;
+}
