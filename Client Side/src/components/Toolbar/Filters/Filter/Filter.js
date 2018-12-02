@@ -16,7 +16,10 @@ const filter = (props) => {
                 {...props}
                 defaultChecked
                 aria-label={props.label}
-                onChange={(e) => console.log(e.target.name + " has changed to: " + (e.target.checked ? "checked" : "unchecked"))} />
+                onChange={(e) => {
+                    console.log("e.target:", e.target);
+                    console.log(e.target.name + " has changed to: " + (e.target.checked ? "checked" : "unchecked"))}
+                 } />
             <span>{props.label}</span>
         </Label>
     );

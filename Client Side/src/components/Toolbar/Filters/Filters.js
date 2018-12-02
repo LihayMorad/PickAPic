@@ -13,6 +13,16 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 import './Filters.css';
 
+const AllFilters = { id: "AllFiltersID", name: "AllFilters", value: "AllFilters", label: "All Filters" };
+const filters = [
+    { id: "PanoramaFilterID", name: "PanoramaFilter", value: "Panorama", label: "Panorama" },
+    { id: "SunriseFilterID", name: "SunriseFilter", value: "Sunrise", label: "Sunrise" },
+    { id: "SeaFilterID", name: "SeaFilter", value: "Sea", label: "Sea" },
+    { id: "RiverFilterID", name: "RiverFilter", value: "River", label: "River" },
+    { id: "FlowersFilterID", name: "FlowersFilter", value: "Flowers", label: "Flowers" },
+    { id: "OtherFilterID", name: "OtherFilter", value: "Other", label: "Other" }
+].map((filter) => <Filter key={filter.id} {...filter} />);
+
 class Filters extends Component {
 
     constructor(props) {
@@ -30,16 +40,6 @@ class Filters extends Component {
     }
 
     render() {
-
-        const AllFilters = { id: "AllFiltersID", name: "AllFilters", value: "AllFilters", label: "All Filters" };
-        const filters = [
-            { id: "PanoramaFilterID", name: "PanoramaFilter", value: "Panorama", label: "Panorama" },
-            { id: "SunriseFilterID", name: "SunriseFilter", value: "Sunrise", label: "Sunrise" },
-            { id: "SeaFilterID", name: "SeaFilter", value: "Sea", label: "Sea" },
-            { id: "RiverFilterID", name: "RiverFilter", value: "River", label: "River" },
-            { id: "FlowersFilterID", name: "FlowersFilter", value: "Flowers", label: "Flowers" },
-            { id: "OtherFilterID", name: "OtherFilter", value: "Other", label: "Other" }
-        ].map((filter) => <Filter key={filter.id} {...filter} />);
 
         return (
             <div>
