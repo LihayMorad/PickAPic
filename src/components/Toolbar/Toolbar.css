@@ -1,0 +1,13 @@
+/* #navbarMain {
+    line-height: 1;
+} */
+
+.navBtn {
+    display: flex;
+}
+
+@media (max-width: 1200px) {
+    .navBtn {
+        margin-top: 8px;
+    }
+}

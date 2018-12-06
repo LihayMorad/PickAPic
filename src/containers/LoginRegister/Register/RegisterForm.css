@@ -1,0 +1,44 @@
+﻿.registerBox {
+    width: 80%;
+    color: black;
+    margin: auto;
+}
+
+#registerForm {
+    margin: 10px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    display: block;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.registerBox p {
+    font-weight: bold;
+}
+
+.registerBox input {
+    margin-bottom: 15px;
+}
+
+.registerBox input[type="text"], input[type="password"] {
+    border: 1px solid black;
+    background-color: rgb(243, 243, 243);
+}
+
+#moveToLoginBtn {
+    margin: 0 20px;
+    display: block;
+    font-size: 14px;
+    float: right;
+}
+
+#moveToLoginBtn:hover {
+    color: #0749ff;
+}

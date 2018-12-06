@@ -1,0 +1,16 @@
+#searchCategoriesButton {
+    color: white;
+    margin-right: 8px;
+    margin-top: auto;
+    box-shadow: 0 0 0.5px 0.3px #17a2b8;
+}
+
+#searchCategoriesButton:hover {
+    transition: 0.4s;
+    border-color: white;
+}
+
+.filtersDropdownLabel:hover,
+.custom-control-label:hover {
+    cursor: pointer;
+}
