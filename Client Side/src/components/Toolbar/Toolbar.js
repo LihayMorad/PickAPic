@@ -16,7 +16,8 @@ class Toolbar extends Component {
         super(props);
 
         this.state = {
-            isOpen: false
+            isOpen: false,
+            isLoggedIn: false
         };
     }
 
@@ -27,6 +28,7 @@ class Toolbar extends Component {
     }
 
     render() {
+        // console.log("[Toolbar state]", this.state);
         return (
             <div>
 
@@ -69,7 +71,7 @@ class Toolbar extends Component {
 
                         {/* Login/Register Button  */} {/* SHOULD BE RENDRED ON ALL PAGES */}
                         <NavItem className="navBtn">
-                            <LoginRegister />
+                            <LoginRegister loggedIn={this.state.isLoggedIn}/>
                         </NavItem>
 
                     </Collapse>

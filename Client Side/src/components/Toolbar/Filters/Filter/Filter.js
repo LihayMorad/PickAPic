@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { CustomInput, Label } from 'reactstrap';
 import Toggle from 'react-toggle'; // https://github.com/aaronshaf/react-toggle
+import { Label } from 'reactstrap';
 
 import './Filter.css';
 import "react-toggle/style.css"

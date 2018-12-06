@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// import { Route, Switch } from 'react-router-dom';
 
 import './Layout.css';
 
@@ -8,13 +9,22 @@ import MapContainer from '../GoogleMap/MapContainer';
 class Layout extends Component {
 
     render() {
+
         return (
             <div>
                 <Toolbar />
-                <MapContainer /> 
+                <MapContainer />
+
+
+                {/* <Switch> */}
+                    {/* <Route exact path="/" component={MapContainer} /> */}
+                    {/* <Route path="/photoupload" component={Photoupload} /> */}
+                {/* </Switch> */}
+
                 {/* <Pages /> */}
             </div>
         );
+        
     }
 
 }
