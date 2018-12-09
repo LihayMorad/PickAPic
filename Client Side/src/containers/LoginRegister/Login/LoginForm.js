@@ -30,7 +30,7 @@ class LoginForm extends Component {
     loginInfo.append('password', event.target.txtPass.value);
 
     axios({
-      method: 'post',
+      method: 'POST',
       url: 'http://localhost/webapplication1/Login',
       headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
       data: loginInfo
@@ -59,13 +59,13 @@ class LoginForm extends Component {
         <h1>Login</h1>
 
         <Form id="loginForm" onSubmit={this.onSubmitHander}>
-          <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-            <Label for="txtUser" className="mr-sm-2">Username</Label>
+          <FormGroup className="mb-2 mb-sm-0">
+            <Label for="txtUser">Username</Label>
             <Input type="text" name="username" id="txtUser"
               placeholder="Enter your username" onChange={this.resetState} required />
           </FormGroup>
-          <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-            <Label for="txtPass" className="mr-sm-2">Password</Label>
+          <FormGroup className="mb-2 mb-sm-0">
+            <Label for="txtPass">Password</Label>
             <Input type="password" name="password" id="txtPass"
               placeholder="Enter your password" onChange={this.resetState} required />
           </FormGroup>

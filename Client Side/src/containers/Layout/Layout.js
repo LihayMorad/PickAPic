@@ -13,7 +13,7 @@ class Layout extends Component {
         return (
             <div>
                 <Toolbar />
-                <MapContainer />
+                <MapContainer style={{height: '500px'}}/>
 
 
                 {/* <Switch> */}

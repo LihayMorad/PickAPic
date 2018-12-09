@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 
-import './LoginRegister.css';
-
-import Link from 'react-router-dom';
-
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import LoginRegisterContainer from '../../../containers/LoginRegister/LoginRegisterContainer';
+
+import './LoginRegister.css';
 
 class LoginRegister extends Component {
 
@@ -37,7 +35,8 @@ class LoginRegister extends Component {
     }
 
     componentDidMount() {
-        console.log('LoginRegister [componentDidMount]');
+        // console.log('[LoginRegister] componentDidMount');
+
         if (this.props.loggedIn) {
             const isLogged = this.props.loggedIn;
             this.setState({
@@ -47,11 +46,12 @@ class LoginRegister extends Component {
     }
 
     componentDidUpdate() {
-        console.log('LoginRegister [componentDidUpdate]');
+        // console.log('[LoginRegister] componentDidUpdate');
+
     }
 
     render() {
-        // console.log('LoginRegister [render]');
+        // console.log('[LoginRegister] render');
         // console.log(this.state);
 
         // const buttonText = this.state.isLogged ? "Logged as " + this.state.userLogged : "Login/Register";

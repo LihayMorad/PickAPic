@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './Toolbar.css';
+import axios from 'axios';
 
 import Logo from './Logo/Logo';
 import SearchInput from './SearchInput/SearchInput';
@@ -9,6 +9,8 @@ import Filters from './Filters/Filters';
 import RadiusSlider from './RadiusSlider/RadiusSlider';
 import LoginRegister from './LoginRegister/LoginRegister';
 import { Collapse, Navbar, NavbarToggler, Nav, NavItem } from 'reactstrap';
+
+import './Toolbar.css';
 
 class Toolbar extends Component {
 
@@ -21,10 +23,30 @@ class Toolbar extends Component {
         };
     }
 
-    toggle = () => {
+    toggleMobileToolbar = () => {
         this.setState({
             isOpen: !this.state.isOpen
         });
+    }
+
+    componentDidMount() {
+
+        // axios({
+        //     method: 'GET',
+        //     url: 'http://localhost/webapplication1/hasCookie',
+
+        // })
+        //     .then((response) => {
+        //         console.log(response);
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //     })
+            
+        // this.setState({
+        //     // isLoggedIn: 
+        // });
+
     }
 
     render() {
@@ -37,7 +59,7 @@ class Toolbar extends Component {
                     {/* LOGO */} {/* SHOULD BE RENDRED ON ALL PAGES */}
                     <Logo />
 
-                    <NavbarToggler onClick={this.toggle} />
+                    <NavbarToggler onClick={this.toggleMobileToolbar} />
 
                     <Collapse isOpen={this.state.isOpen} navbar>
 
@@ -71,7 +93,7 @@ class Toolbar extends Component {
 
                         {/* Login/Register Button  */} {/* SHOULD BE RENDRED ON ALL PAGES */}
                         <NavItem className="navBtn">
-                            <LoginRegister loggedIn={this.state.isLoggedIn}/>
+                            <LoginRegister loggedIn={this.state.isLoggedIn} />
                         </NavItem>
 
                     </Collapse>

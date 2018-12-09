@@ -26,11 +26,12 @@ class loginRegisterContainer extends Component {
     render() {
 
         return (
-            <div id="divmo">
+            <div>
                 <Modal
                     isOpen={this.props.isOpen}
-                    toggle={this.props.toggleModal} >
-
+                    toggle={this.props.toggleModal}
+                    centered >
+                    
                     {/* <ModalHeader>{this.props.title}</ModalHeader> */}
 
                     <ModalBody>

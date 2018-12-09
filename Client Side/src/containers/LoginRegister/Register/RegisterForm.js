@@ -59,13 +59,13 @@ class RegisterForm extends Component {
                 <h1>Register</h1>
 
                 <Form id="registerForm" onSubmit={this.onSubmitHander}>
-                    <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                        <Label for="txtUser" className="mr-sm-2">Username</Label>
+                    <FormGroup className="mb-2 mb-sm-0">
+                        <Label for="txtUser">Username</Label>
                         <Input type="text" name="username" id="txtUser"
                             placeholder="Enter your username" onChange={this.resetState} required />
                     </FormGroup>
-                    <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                        <Label for="txtPass" className="mr-sm-2">Password</Label>
+                    <FormGroup className="mb-2 mb-sm-0">
+                        <Label for="txtPass">Password</Label>
                         <Input type="password" name="password" id="txtPass"
                             placeholder="Enter your password" onChange={this.resetState} required />
                     </FormGroup>

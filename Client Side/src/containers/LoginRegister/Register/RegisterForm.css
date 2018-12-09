@@ -1,5 +1,5 @@
 ﻿.registerBox {
-    width: 80%;
+    width: 350px;
     color: black;
     margin: auto;
 }
@@ -33,10 +33,11 @@ h1 {
 }
 
 #moveToLoginBtn {
-    margin: 0 20px;
+    margin: 0 13px;
     display: block;
     font-size: 14px;
     float: right;
+    color: #6c757d;
 }
 
 #moveToLoginBtn:hover {
