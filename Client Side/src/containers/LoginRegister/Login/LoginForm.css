@@ -1,5 +1,5 @@
 ﻿.loginBox {
-    max-width: 350px;
+    width: 80%;
     color: black;
     margin: auto;
 }
@@ -23,6 +23,11 @@ h1 {
     font-weight: bold;
 }
 
+.p1 {
+    font-weight: bold;
+    cursor: pointer
+}
+
 .loginBox input {
     margin-bottom: 15px;
 }
@@ -33,14 +38,12 @@ h1 {
 }
 
 #moveToRegisterBtn {
-    margin: 0 13px;
+    margin: 0 20px;
     display: block;
     font-size: 14px;
     float: right;
-    color: #6c757d;
 }
 
 #moveToRegisterBtn:hover {
     color: #0749ff;
-    transition: 0.4s;
 }

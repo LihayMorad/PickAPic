@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
-// import { Route, Switch } from 'react-router-dom';
-
+import { Route, Switch } from 'react-router-dom';
 import './Layout.css';
-
 import Toolbar from '../../components/Toolbar/Toolbar';
 import MapContainer from '../GoogleMap/MapContainer';
+import Details from '../../containers/PictureDetails/PictureDetailsContainer';
 
 class Layout extends Component {
-
+////routing is currently done only in layout as it should
     render() {
 
         return (
             <div>
-                <Toolbar />
-                <MapContainer style={{height: '500px'}}/>
-
-
-                {/* <Switch> */}
-                    {/* <Route exact path="/" component={MapContainer} /> */}
-                    {/* <Route path="/photoupload" component={Photoupload} /> */}
-                {/* </Switch> */}
-
-                {/* <Pages /> */}
+                <Toolbar /> 
+                
+                <Switch>
+                    <Route exact path="/" component={MapContainer} />
+                    <Route path="/details" component={Details} />
+                 </Switch>    
+         
             </div>
         );
         

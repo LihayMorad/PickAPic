@@ -1,5 +1,5 @@
 ﻿.registerBox {
-    width: 350px;
+    width: 80%;
     color: black;
     margin: auto;
 }
@@ -23,6 +23,11 @@ h1 {
     font-weight: bold;
 }
 
+.p1 {
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .registerBox input {
     margin-bottom: 15px;
 }
@@ -33,11 +38,10 @@ h1 {
 }
 
 #moveToLoginBtn {
-    margin: 0 13px;
+    margin: 0 20px;
     display: block;
     font-size: 14px;
     float: right;
-    color: #6c757d;
 }
 
 #moveToLoginBtn:hover {

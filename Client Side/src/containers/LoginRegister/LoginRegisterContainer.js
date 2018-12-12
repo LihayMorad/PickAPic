@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-
-import { Route, Switch } from 'react-router-dom';
-
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-
+import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import LoginForm from './Login/LoginForm';
 import RegisterForm from './Register/RegisterForm';
-
 import './LoginRegisterContainer.css';
 
 class loginRegisterContainer extends Component {
 
     state = {
-        username: ""
+        username: "",
+        currentPage: "login"
     }
 
     toggleUser = username => {
@@ -23,8 +19,19 @@ class loginRegisterContainer extends Component {
         }
     }
 
-    render() {
+    ////function to pass to child component for updating for the current page
+    pageSwitchHandler = pageSwitch => {
+        this.setState({ currentPage: pageSwitch });
+    }
 
+    ////function to pass to child component for updating for the logged user
+    getLoggedUserHandler = loggedUser => {
+        this.setState({ username: loggedUser });
+        console.log(this.state.username);
+    }
+
+    ////using conditional rendering. routing is no longer needed
+    render() {
         return (
             <div>
                 <Modal
@@ -36,15 +43,10 @@ class loginRegisterContainer extends Component {
 
                     <ModalBody>
 
-                        <Switch>
-                            <Route exact path="/" name="login"
-                                render={(props) => <LoginForm {...props} toggleUsername={this.toggleUser} />}
-                            />
-                            <Route path="/register" name="register"
-                                render={(props) => <RegisterForm {...props} toggleUsername={this.toggleUser} />}
-                            />
-                        </Switch>
-
+                        {(this.state.currentPage === 'login') ?
+                            <LoginForm changePage={this.pageSwitchHandler} loggedUser={this.getLoggedUserHandler} />
+                            :
+                            <RegisterForm changePage={this.pageSwitchHandler} loggedUser={this.getLoggedUserHandler} />}
                     </ModalBody>
 
                     <ModalFooter>

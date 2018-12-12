@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-
-import { withRouter } from "react-router-dom";
-import { Link } from 'react-router-dom';
 import axios from 'axios';
-
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
-
 import avatar from '../../../assets/loginRegister.png';
-
 import './RegisterForm.css';
 
 class RegisterForm extends Component {
+
     constructor(props) {
         super(props);
 
@@ -38,7 +33,8 @@ class RegisterForm extends Component {
             .then((response) => {
                 console.log(response);
                 alert("Successfully registered, you are logged in now.")
-                this.props.toggleUsername(username);
+                console.log(username);
+                this.props.loggedUser(username);
             })
             .catch((error) => {
                 console.log(error);
@@ -46,14 +42,13 @@ class RegisterForm extends Component {
             });
     }
 
-    resetState = () => {
-        this.setState({ errormsg: null });
+    redirectLogin = () => {
+        this.props.changePage('login');
     }
 
+    //// no more routing and linking in register simple pass of data between components (this form <--> wrapper)
     render() {
-
         return (
-
             <div className="registerBox">
                 <img src={avatar} alt='register avatar' className="avatar" />
                 <h1>Register</h1>
@@ -71,14 +66,10 @@ class RegisterForm extends Component {
                     </FormGroup>
                     <Button color="primary" name="submitRegister">Register</Button>
                 </Form>
-
-                <Link id="moveToLoginBtn" to='/'>
-                    <p>Already a user?</p>
-                </Link>
+                <p className="p1" onClick={this.redirectLogin}>Already A User?</p>
             </div>
-
         );
     }
 }
 
-export default withRouter(RegisterForm);
+export default RegisterForm;

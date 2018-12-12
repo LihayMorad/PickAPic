@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
-
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
 import FullsizeMarker from '../FullsizeMarker/FullsizeMarker';
+
+import { getRadius } from '../../components/Toolbar/RadiusSlider/RadiusSlider';
 
 // main https://www.npmjs.com/package/google-maps-react
 // https://scotch.io/tutorials/react-apps-with-the-google-maps-api-and-google-maps-react
@@ -35,6 +37,9 @@ const mapContainerStyle = {
   height: '90%'
 }
 
+let currLat;
+let currLng;
+
 class MapContainer extends Component {
 
   state = {
@@ -43,11 +48,30 @@ class MapContainer extends Component {
     markersArray: []
   };
 
+  getGeoLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(userlocation => {
+        this.setState(prevState => ({
+          currentLatLng: {
+            ...prevState.currentLatLng,
+            lat: userlocation.coords.latitude,
+            lng: userlocation.coords.longitude
+          }
+        }))
+        currLat = userlocation.coords.latitude;
+        currLng = userlocation.coords.longitude;
+      }
+      )
+    }
+  }
+
   onMapIdle = (mapProps, map) => {
 
     let mapCenter = null;
     let mapBounds = null;
     const mapParams = {};
+
+    this.getGeoLocation();
 
     if (map.getBounds() !== undefined && map.getCenter() !== undefined) {
 
@@ -59,7 +83,7 @@ class MapContainer extends Component {
       mapParams.swX = mapBounds.getSouthWest().toJSON().lat;
       mapParams.swY = mapBounds.getSouthWest().toJSON().lng;
 
-      mapParams.rad = 0; // WE NEED TO GET IT DYNAMICALLY FROM RADIUS SLIDER
+      mapParams.rad = getRadius();
 
       mapParams.centerX = mapCenter.lat;
       mapParams.centerY = mapCenter.lng;
@@ -73,25 +97,39 @@ class MapContainer extends Component {
     // console.log("[getMarkers]");
 
     axios('http://localhost/webapplication1/api/numOfPhotos/', { params: mapParams })
-      .then((res) => {
+      .then((response) => {
         // console.log("[numOfPhotos] res:", res);
         // console.table(res.data);
-        const markers = res.data.map((marker) => {
-          return <Marker
-            key={marker.id}
-            markerId={marker.id}
-            position={{ lat: marker.lat, lng: marker.lng }}
-            filters={marker.filters}
-            title={"Filter: " + marker.filters}
-            icon={{
-              url: 'http://localhost/webapplication1/api/image/thumbnail_' + marker.id
-            }}
-            onClick={this.onMarkerClick} />
+        const markers = response.data.map((marker) => {
+
+          if (this.areSearchCoordinatesWithinRadius(currLat, currLng, marker.lat, marker.lng, getRadius()) || getRadius() === 0) {
+
+            return <Marker
+              key={marker.id}
+              markerId={marker.id}
+              position={{ lat: marker.lat, lng: marker.lng }}
+              filters={marker.filters}
+              title={"Filter: " + marker.filters}
+              icon={{
+                url: 'http://localhost/webapplication1/api/image/thumbnail_' + marker.id
+              }}
+              onClick={this.onMarkerClick}
+            />
+          }
         });
         this.setState({ markersArray: markers });
       })
       .catch((error) => console.log(error));
 
+  }
+
+  areSearchCoordinatesWithinRadius = (a, b, x, y, r) => {
+    let dist = (a - x) * (a - x) + (a - y) * (a - y);
+    r *= r;
+    if (dist < r) {
+      return true;
+    }
+    return false;
   }
 
   onMarkerClick = (props, marker, e) => {
@@ -162,6 +200,10 @@ class MapContainer extends Component {
 
   }
 
+}
+
+export const updateMap = () => {
+  return (MapContainer.onMapIdle)
 }
 
 export default GoogleApiWrapper({

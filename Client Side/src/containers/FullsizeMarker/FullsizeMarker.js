@@ -9,10 +9,6 @@ import './FullsizeMarker.css';
 
 class FullsizeMarker extends PureComponent {
 
-    // componentDidMount() {
-    //     console.log('[FullsizeMarker] componentDidMount');
-    // }
-
     state = {
         photoURL: "",
         username: "",
@@ -20,6 +16,10 @@ class FullsizeMarker extends PureComponent {
         uploaddate: "",
         filter: ""
     }
+
+    // componentDidMount() {
+    //     console.log('[FullsizeMarker] componentDidMount');
+    // }
 
     componentDidUpdate() {
         console.log('[FullsizeMarker] componentDidUpdate');
@@ -53,34 +53,34 @@ class FullsizeMarker extends PureComponent {
         this.getPhotoDetails();
 
         return (
-                <Modal
+            <Modal
 
-                    isOpen={this.props.isOpen}
-                    toggle={this.props.toggleModal}
-                    centered>
+                isOpen={this.props.isOpen}
+                toggle={this.props.toggleModal}
+                centered>
 
-                    <ModalHeader>
-                        {this.state.description}
-                        <Button size="sm" className={"modalHeaderCloseBtn"} color="secondary" onClick={this.props.toggleModal}>X</Button>
-                    </ModalHeader>
+                <ModalHeader>
+                    {this.state.description}
+                    <Button size="sm" className={"modalHeaderCloseBtn"} color="secondary" onClick={this.props.toggleModal}>X</Button>
+                </ModalHeader>
 
-                    <ModalBody>
-                        <img className={"img-fluid modalBodyImg"} src={this.state.photoURL} alt="full screen photo"></img>
-                    </ModalBody>
+                <ModalBody>
+                    <img className={"img-fluid modalBodyImg"} src={this.state.photoURL} alt="full screen photo"></img>
+                </ModalBody>
 
-                    <ModalFooter>
-                        <div className={"ModalFooterDetailsRow"}>
-                            <div className={"detailElem"}><strong>Uploaded by: </strong>{this.state.username}</div>
-                            <div className={"detailElem"}><strong>Uploaded at: </strong>{this.state.uploaddate}</div>
-                            <div className={"detailElem"}><strong>Filter: </strong>{this.state.filter}</div>
+                <ModalFooter>
+                    <div className={"ModalFooterDetailsRow"}>
+                        <div className={"detailElem"}><strong>Uploaded by: </strong>{this.state.username}</div>
+                        <div className={"detailElem"}><strong>Uploaded at: </strong>{this.state.uploaddate}</div>
+                        <div className={"detailElem"}><strong>Filter: </strong>{this.state.filter}</div>
 
-                            <div className={"modalFooterCloseBtn"}>
-                                <Button color="secondary" onClick={this.props.toggleModal}>Close</Button>
-                            </div>
+                        <div className={"modalFooterCloseBtn"}>
+                            <Button color="secondary" onClick={this.props.toggleModal}>Close</Button>
                         </div>
-                    </ModalFooter>
+                    </div>
+                </ModalFooter>
 
-                </Modal>
+            </Modal>
         );
     }
 

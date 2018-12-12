@@ -1,23 +1,17 @@
 import React, { Component } from 'react';
-
-import { withRouter } from "react-router-dom";
-import { Link } from 'react-router-dom';
 import axios from 'axios';
-
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
-
 import avatar from '../../../assets/loginRegister.png';
-
 import './LoginForm.css';
 
 class LoginForm extends Component {
+
   constructor(props) {
     super(props);
 
     this.state = {
-      errormsg: null
+      errormsg: null,
     };
-
   }
 
   onSubmitHander = (event) => {
@@ -25,9 +19,12 @@ class LoginForm extends Component {
     event.preventDefault();
 
     const loginInfo = new URLSearchParams();
-    const username = event.target.txtUser.value;
+    const user = event.target.txtUser.value;
     loginInfo.append('username', event.target.txtUser.value);
     loginInfo.append('password', event.target.txtPass.value);
+
+    console.log(event.target.txtUser.value, event.target.txtPass.value);
+
 
     axios({
       method: 'POST',
@@ -38,26 +35,25 @@ class LoginForm extends Component {
       .then((response) => {
         console.log(response);
         alert("Successfully logged in!!");
-        this.props.toggleUsername(username);
+        this.props.loggedUser(user);
+        console.log(user);
       })
       .catch((error) => {
-        console.log(error);
+        console.log('error');
         alert("Wrong Username/Password! please try again.");
-      })
+      });
   }
 
-  resetState = () => {
-    this.setState({ errormsg: null });
+  redirectRegister = () => {
+    this.props.changePage('register');
   }
-
+  //// no more routing and linking in login simple pass of data between components (this form <--> wrapper)
   render() {
 
     return (
-
       <div className="loginBox">
         <img src={avatar} alt='login avatar' className="avatar" />
         <h1>Login</h1>
-
         <Form id="loginForm" onSubmit={this.onSubmitHander}>
           <FormGroup className="mb-2 mb-sm-0">
             <Label for="txtUser">Username</Label>
@@ -69,17 +65,14 @@ class LoginForm extends Component {
             <Input type="password" name="password" id="txtPass"
               placeholder="Enter your password" onChange={this.resetState} required />
           </FormGroup>
-          <Button color="primary" name="submitLogin">Login</Button>
+          <Button color="primary" name="submitLogin" type="submit">Login</Button>
         </Form>
+        <p className="p1" onClick={this.redirectRegister}>Don't have an account?</p>
 
-        <Link id="moveToRegisterBtn" to='/register'>
-          <p>Don't have an account?</p>
-        </Link>
       </div>
-
     );
   }
 
 }
 
-export default withRouter(LoginForm);
+export default LoginForm;

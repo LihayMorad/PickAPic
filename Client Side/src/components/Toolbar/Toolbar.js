@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
 import axios from 'axios';
-
 import Logo from './Logo/Logo';
 import SearchInput from './SearchInput/SearchInput';
 import Upload from './Upload/Upload';
