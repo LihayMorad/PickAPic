@@ -21,7 +21,8 @@ class Upload extends Component {
         console.log("Upload [uploadedImageHandler]");
          event.preventDefault();
         let file = event.target.files[0];
-
+        console.log('[Upload]', file);
+        
         ////exif function that extracts gps
         if (file.type === "image/jpeg") {
             Exif.getData(file, () => {
@@ -39,11 +40,11 @@ class Upload extends Component {
     }
 
     componentDidMount() {
-        console.log('Upload [componentDidMount]');
+        // console.log('Upload [componentDidMount]');
     }
 
     componentDidUpdate() {
-        console.log('Upload [componentDidUpdate]', this.state);
+        // console.log('Upload [componentDidUpdate]', this.state);
     }
 
     ////updating the state with new lat lang values, checking if exif data inn the picture exists and noting that a oicture was uploaded

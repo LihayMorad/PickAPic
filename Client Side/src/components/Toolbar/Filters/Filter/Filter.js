@@ -4,7 +4,7 @@ import Toggle from 'react-toggle'; // https://github.com/aaronshaf/react-toggle
 import { Label } from 'reactstrap';
 
 import './Filter.css';
-import "react-toggle/style.css"
+import 'react-toggle/style.css';
 
 const filter = (props) => {
     // console.log('[filter] props: ', props);
@@ -14,12 +14,9 @@ const filter = (props) => {
             {/*instead we can use: <CustomInput type="checkbox" defaultChecked {...props} /> */}
             <Toggle
                 {...props}
-                defaultChecked
                 aria-label={props.label}
-                onChange={(e) => {
-                    console.log("e.target:", e.target);
-                    console.log(e.target.name + " has changed to: " + (e.target.checked ? "checked" : "unchecked"))}
-                 } />
+                onChange={(e) => { console.log(e.target.name + " has changed to: " + (e.target.checked ? "checked" : "unchecked")); }}
+            />
             <span>{props.label}</span>
         </Label>
     );

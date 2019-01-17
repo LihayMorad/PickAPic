@@ -22,7 +22,7 @@ class FullsizeMarker extends PureComponent {
     // }
 
     componentDidUpdate() {
-        console.log('[FullsizeMarker] componentDidUpdate');
+        // console.log('[FullsizeMarker] componentDidUpdate');
         // console.log('[FullsizeMarker] this.props.activeMarker', this.props.activeMarker.markerId);
 
     }
@@ -42,15 +42,16 @@ class FullsizeMarker extends PureComponent {
             username: photoData.username,
             description: photoData.description,
             uploaddate: photoData.uploaddate,
-            filter: photoData.filter,
+            filter: this.props.activeMarker.filter,
         };
         this.setState({ ...photodetails });
     }
 
     render() {
-        console.log('[FullsizeMarker] render');
+        // console.log('[FullsizeMarker] render');
 
-        this.getPhotoDetails();
+        if (this.props.isOpen)
+            this.getPhotoDetails();
 
         return (
             <Modal
@@ -65,7 +66,7 @@ class FullsizeMarker extends PureComponent {
                 </ModalHeader>
 
                 <ModalBody>
-                    <img className={"img-fluid modalBodyImg"} src={this.state.photoURL} alt="full screen photo"></img>
+                    <img className={"img-fluid modalBodyImg"} src={this.state.photoURL} alt="full screen"></img>
                 </ModalBody>
 
                 <ModalFooter>

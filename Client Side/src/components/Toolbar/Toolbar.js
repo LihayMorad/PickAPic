@@ -22,9 +22,7 @@ class Toolbar extends Component {
     }
 
     toggleMobileToolbar = () => {
-        this.setState({
-            isOpen: !this.state.isOpen
-        });
+        this.setState({ isOpen: !this.state.isOpen });
     }
 
     componentDidMount() {
@@ -40,7 +38,7 @@ class Toolbar extends Component {
         //     .catch((error) => {
         //         console.log(error);
         //     })
-            
+
         // this.setState({
         //     // isLoggedIn: 
         // });
@@ -49,6 +47,7 @@ class Toolbar extends Component {
 
     render() {
         // console.log("[Toolbar state]", this.state);
+        // console.log('[this.props.radiusChange]',this.props.radiusChange);
         return (
             <div>
 
@@ -63,7 +62,6 @@ class Toolbar extends Component {
 
                         <Nav navbar className="mr-auto" >
 
-
                             {/* Search Location Input */}
                             <NavItem>
                                 <SearchInput />
@@ -72,13 +70,15 @@ class Toolbar extends Component {
 
                             {/* Categories (Filters) Button */}
                             <NavItem className="navBtn">
-                                <Filters />
+                                <Filters
+                                    mapTriggerRef={this.props.mapTriggerRef} />
                             </NavItem>
 
 
                             {/* Search by radius */}
                             <NavItem className="navBtn">
-                                <RadiusSlider />
+                                <RadiusSlider
+                                    mapTriggerRef={this.props.mapTriggerRef} />
                             </NavItem>
 
 

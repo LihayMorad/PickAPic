@@ -44,9 +44,9 @@ class loginRegisterContainer extends Component {
                     <ModalBody>
 
                         {(this.state.currentPage === 'login') ?
-                            <LoginForm changePage={this.pageSwitchHandler} loggedUser={this.getLoggedUserHandler} />
+                            <LoginForm changePage={this.pageSwitchHandler} loggedUser={this.toggleUser} />
                             :
-                            <RegisterForm changePage={this.pageSwitchHandler} loggedUser={this.getLoggedUserHandler} />}
+                            <RegisterForm changePage={this.pageSwitchHandler} loggedUser={this.toggleUser} />}
                     </ModalBody>
 
                     <ModalFooter>

@@ -44,7 +44,7 @@ namespace WebApplication1.Controllers
         //// Get all photos from server
         //// Builds table info to return to client
         [Route("api/numOfPhotos")]
-        public IEnumerable<QuickPhoto> GetnoOfphotos(double neX, double neY, double swX, double swY, double rad, double centerX, double centerY)
+        public IEnumerable<QuickPhoto> GetnoOfphotos(double neX, double neY, double swX, double swY, int rad, double centerX, double centerY)
         {
             MySqlConnection m_Conn;
             string m_QueryStr;
@@ -69,13 +69,16 @@ namespace WebApplication1.Controllers
             {
                 if (neY < swY)
                 {
-                    m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<='" + neX + "' AND Lat >= '" + swX + "' AND (Lng<='" + neY + "' OR Lng >= '" + swY + "') " +
-                        "AND (('" + centerX + "' - Lat)*('" + centerX + "' - Lat) + ('" + centerY + "' - Lng)*('" + centerY + "' - Lng))<= '" + rad * rad + "';";
+                    m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<=" + neX + " AND Lat >= " + swX + " AND (Lng<=" + neY + " OR Lng >= " + swY + ") " +
+                        "AND calc_dist(" + centerX + "," + centerY + ", Lat, Lng) <=" + rad;
+
+                    //m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<='" + neX + "' AND Lat >= '" + swX + "' AND (Lng<='" + neY + "' OR Lng >= '" + swY + "') " +
+                    //    "AND (('" + centerX + "' - Lat)*('" + centerX + "' - Lat) + ('" + centerY + "' - Lng)*('" + centerY + "' - Lng))<= '" + rad * rad + "';";
                 }
                 else
                 {
                     m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<='" + neX + "' AND Lat >= '" + swX + "' AND Lng<='" + neY + "' AND Lng >= '" + swY + "' " +
-                        "AND (('" + centerX + "' - Lat)*('" + centerX + "' - Lat) + ('" + centerY + "' - Lng)*('" + centerY + "' - Lng))<= '" + rad * rad + "';";
+                        "AND calc_dist(" + centerX + "," + centerY + ", Lat, Lng) <=" + rad;
                 }
             }
 
@@ -87,7 +90,7 @@ namespace WebApplication1.Controllers
 
             while ( dataReader.Read() )
             {
-                if (!dataReader.IsDBNull(2) )
+                if (!dataReader.IsDBNull(3) )
                 {
                     QuickPhoto temp = new QuickPhoto(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetDouble(2), dataReader.GetDouble(3), dataReader.GetDouble(4), dataReader.GetInt32(5), dataReader.GetString(6));
                     lst.Add(temp);

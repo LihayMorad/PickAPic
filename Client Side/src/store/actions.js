@@ -1,0 +1,2 @@
+export const CHANGE_RADIUS = 'CHANGE_RADIUS';
+export const CHANGE_FILTERS = 'CHANGE_FILTERS';
