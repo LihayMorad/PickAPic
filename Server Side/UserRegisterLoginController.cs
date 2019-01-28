@@ -20,24 +20,81 @@ namespace WebApplication1.Controllers
         public MySqlDataReader Reader;
         public String QueryStr;
 
-        // login method 
-        [HttpPost]
+        // login method
         [Route("Login")]
+        [HttpPost]
         public HttpResponseMessage LoginUser([FromBody] User user)
         {
-            var response = new HttpResponseMessage();
+            HttpResponseMessage response = new HttpResponseMessage();
 
             if (loginUser(user.Username, user.Password))
             {
-                response.Headers.AddCookies(new CookieHeaderValue[] { createCookie(user) });
+                String guid = Guid.NewGuid().ToString();
+                response.Content = new StringContent(guid);
+                HttpContext.Current.Application[user.Username] = guid;
                 response.StatusCode = HttpStatusCode.OK;
                 return response;
+            }
+
+            // else a bad request will be returned
+            response.StatusCode = HttpStatusCode.BadRequest;
+            response.Content = new StringContent("Incorrect username/password !");
+
+            return response;
+        }
+
+        // register method
+        [Route("Registration")]
+        [HttpPost]
+        public HttpResponseMessage RegisterUser([FromBody] User user)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            if (registerUser(user.Username, user.Password))
+            {
+                String guid = Guid.NewGuid().ToString();
+                response.Content = new StringContent(guid);
+                HttpContext.Current.Application[user.Username] = guid;
+                response.StatusCode = HttpStatusCode.OK;
+                return response;
+            }
+
+            // else  a bad request will be returned
+            response.StatusCode = HttpStatusCode.BadRequest;
+            response.Content = new StringContent("There was a problem with your registration");
+
+            return response;
+        }
+
+        [Route("CheckAccessToken")]
+        [HttpPost]
+        //public HttpResponseMessage CheckAccessToken([FromBody]User accessToken)
+        public HttpResponseMessage CheckAccessToken([FromBody] MySession accessToken)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            if (accessToken.AccessToken != string.Empty)
+            {
+                string userName = searchUserByAccessToken(accessToken.AccessToken);
+                if (userName != null)
+                {
+                    response.Content = new StringContent(userName);
+                    return response;
+                }
             }
             // else a bad request will be returned
             response.StatusCode = HttpStatusCode.BadRequest;
             response.Content = new StringContent("Incorrect username/password !");
 
             return response;
+        }
+
+        private string searchUserByAccessToken(string accessToken)
+        {
+            for (int i = 0; i < HttpContext.Current.Application.Count; i++)
+                if ((string)HttpContext.Current.Application[i] == accessToken)
+                    return (string)HttpContext.Current.Application.GetKey(i);
+            return null;
         }
 
         //// Check if username and password are correct for login
@@ -65,7 +122,7 @@ namespace WebApplication1.Controllers
         {
             var vals = new NameValueCollection();
 
-            vals["sessionid"] = Guid.NewGuid().ToString();//maybe encrypt with password
+            vals["sessionid"] = Guid.NewGuid().ToString(); // maybe encrypt with password
             vals["username"] = user.Username;
 
             var cookie = new CookieHeaderValue("session", vals);
@@ -86,32 +143,13 @@ namespace WebApplication1.Controllers
             return cookie;
         }
 
-        // register method
-        [HttpPost]
-        [Route("Registration")]
-        public HttpResponseMessage RegisterUser([FromBody] User user)
-        {
-            var response = new HttpResponseMessage();
-            if (registerUser(user.Username, user.Password))
-            {
-                response.Headers.AddCookies(new CookieHeaderValue[] { createCookie(user) });
-                response.StatusCode = HttpStatusCode.OK;
-                return response;
-            }
-            // else  a bad request will be returned
-
-            response.StatusCode = HttpStatusCode.BadRequest;
-            response.Content = new StringContent("Can't register");
-
-            return response;
-        }
-
         // Checks if user has cookie or not
         [HttpGet]
         [Route("hasCookie")]
-        public IHttpActionResult hasCookie()
+        public HttpResponseMessage hasCookie()
         {
             var userCookie = Request.Headers.GetCookies("session").FirstOrDefault();
+            var response = new HttpResponseMessage();
 
             if (userCookie != null)
             {
@@ -124,26 +162,19 @@ namespace WebApplication1.Controllers
                 userSessionArray[1] = userSessionUsername;
                 userSessionArray[2] = "User has cookie c#";
 
-                //////
-                //var resp = new HttpResponseMessage();
+                response = Request.CreateResponse(HttpStatusCode.OK, userSessionArray);
 
-                //var nv = new NameValueCollection();
-                //nv["sid"] = "12345";
-                //nv["token"] = "abcdef";
-                //nv["theme"] = "dark blue";
-                //var cookie = new CookieHeaderValue("session", nv);
+                response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+                response.Headers.Add("Access-Control-Allow-Credentials", "true");
 
-                //resp.Headers.AddCookies(new CookieHeaderValue[] { cookie }); //////
-
-                return Ok(userSessionArray);
+                return response;
             }
-            return NotFound();
+            return response;
         }
 
         //// Update mysql database with new user if successful
         private bool registerUser(string username, string password)
         {
-
             if (checkUsernameAvailablity(username))
                 return false;
 
@@ -194,6 +225,5 @@ namespace WebApplication1.Controllers
 
             return userExists;
         }
-
     }
 }

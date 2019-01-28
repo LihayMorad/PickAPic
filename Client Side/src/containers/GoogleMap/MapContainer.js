@@ -36,17 +36,19 @@ class MapContainer extends Component {
   };
 
   getGeoLocation = () => {
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ watchPosition or getCurrentPosition
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(userlocation => {
+      let watchID = navigator.geolocation.watchPosition(userlocation => {
         const currentLatLng = {
           lat: userlocation.coords.latitude,
           lng: userlocation.coords.longitude
         }
-        this.setState(() => ({ currentLatLng }))
+        // console.log('​MapContainer -> getGeoLocation -> currentLatLng', currentLatLng);
+        // console.log('​MapContainer -> getGeoLocation -> watchID', watchID);
+        this.setState({ currentLatLng, watchID: watchID });
       },
-        (err) => { console.error('Navigator.geolocation error: ', err.message); },
+        (error) => { console.error('Navigator.geolocation error: ', error.message); },
         { timeout: 3000 }); // after 3 seconds without answer, call the error function above
-
     }
     else { console.log('Geolocation is not supported for this Browser/OS.'); }
   }
@@ -57,7 +59,7 @@ class MapContainer extends Component {
   }
 
   onMapIdle = (mapProps, map) => {
-    // console.log("​[MapContainer] > onMapIdle")
+    console.log("​[MapContainer] > onMapIdle")
 
     let mapCenter = null;
     let mapBounds = null;
@@ -70,6 +72,7 @@ class MapContainer extends Component {
     if (map.getBounds() !== undefined && map.getCenter() !== undefined) {
 
       mapBounds = map.getBounds();
+
       // need to be tested and validate/disable radius slider
       mapCenter = this.state.currentLatLng ? this.state.currentLatLng : map.getCenter().toJSON();
 
@@ -80,6 +83,7 @@ class MapContainer extends Component {
       mapParams.rad = currRadius;
       mapParams.centerX = mapCenter.lat;
       mapParams.centerY = mapCenter.lng;
+      // console.log(mapParams);
 
       this.getMarkers(mapParams);
     }
@@ -89,11 +93,10 @@ class MapContainer extends Component {
   getMarkers = mapParams => {
     // console.log("​[MapContainer] -> mapParams", mapParams)
     // console.log('[MapContainer] > getMarkers > this.props.filtersArray:', this.props.filtersArray);
-    console.log('[MapContainer] > getMarkers');
-
+    // console.log('[MapContainer] > getMarkers');
 
     axios('http://localhost/webapplication1/api/numOfPhotos/', { params: mapParams })
-      .then((response) => {
+      .then(response => {
         // console.table(response.data);
         const markers = response.data.filter(marker => this.props.filtersArray[marker.filters])
           .map((marker) => {
@@ -109,8 +112,7 @@ class MapContainer extends Component {
           });
         this.setState({ markersArray: markers });
       })
-      .catch((error) => console.error(error));
-
+      .catch(error => console.error(error));
   }
 
   onMarkerClick = (props, marker, e) => {
@@ -129,11 +131,27 @@ class MapContainer extends Component {
 
   componentDidMount() {
     // console.log('[MapContainer] > componentDidMount');
-
-    this.props.mapTriggerRef(this.triggerIdle);
   }
 
-  // componentDidUpdate() { console.log('[MapContainer] > componentDidUpdate'); }
+  componentUnMount() {
+    // console.log('[MapContainer] > componentDidMount');
+    navigator.geolocation.clearWatch(this.state.watchID);
+  }
+
+  componentDidUpdate(prevProps) { // @@@@@@@@@@@@@@@@@@@@ NEED TO DO IT REDUX-STYLE, WHENEVER STORE CHANGE, TRIGGER IDLE
+
+    if (prevProps.filtersArray !== this.props.filtersArray) {
+      // console.log('[MapContainer] -> componentDidUpdate -> prevProps:', prevProps.filtersArray, '&& this.props.filtersArray:', this.props.filtersArray);
+      this.onMapIdle(this.state.mapProps, this.state.map);
+    }
+
+    if (prevProps.radius !== this.props.radius) {
+      // console.log('[MapContainer] -> componentDidUpdate -> prevProps:', prevProps.radius, '!= this.props.radius:', this.props.radius);
+      // console.log('[MapContainer] -> componentDidUpdate -> this.state.markersArray:', this.state.markersArray);
+      this.onMapIdle(this.state.mapProps, this.state.map);
+    }
+
+  }
 
   triggerIdle = () => { this.onMapIdle(this.state.mapProps, this.state.map); }
 

@@ -6,72 +6,61 @@ import './LoginForm.css';
 
 class LoginForm extends Component {
 
-  constructor(props) {
-    super(props);
+    onSubmitHander = event => {
+        // console.log('[localStorage] access-token', localStorage.getItem("access-token"));
+        event.preventDefault();
 
-    this.state = {
-      errormsg: null,
-    };
-  }
+        const username = event.target.txtUser.value;
+        const loginInfo = new URLSearchParams();
+        loginInfo.append('username', event.target.txtUser.value);
+        loginInfo.append('password', event.target.txtPass.value);
 
-  onSubmitHander = (event) => {
+        // console.log(event.target.txtUser.value, event.target.txtPass.value);
 
-    event.preventDefault();
+        axios({
+            method: 'POST',
+            url: 'http://localhost/webapplication1/Login',
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            data: loginInfo
+        })
+            .then(response => {
+                // console.log('response', response);
+                localStorage.setItem('access-token', response.data);
+                this.props.handleLoggedUser(username);
+                alert("Hi, " + username + ", you're logged in.");
+            })
+            .catch(error => {
+                // console.error('error', error);
+                alert("Wrong Username/Password! Please try again.");
+            });
+    }
 
-    const loginInfo = new URLSearchParams();
-    const user = event.target.txtUser.value;
-    loginInfo.append('username', event.target.txtUser.value);
-    loginInfo.append('password', event.target.txtPass.value);
+    redirectToRegister = () => { this.props.handleFormChange('register'); }
 
-    console.log(event.target.txtUser.value, event.target.txtPass.value);
+    render() {
 
+        return (
+            <div className="loginBox">
+                <img src={avatar} alt='login avatar' className="avatar" />
+                <h1>Login</h1>
+                <Form id="loginForm" onSubmit={this.onSubmitHander}>
+                    <FormGroup className="mb-2 mb-sm-0">
+                        <Label for="txtUser">Username</Label>
+                        <Input id="txtUser" type="text" name="username"
+                            placeholder="Enter your username" required />
+                    </FormGroup>
+                    <FormGroup className="mb-2 mb-sm-0">
+                        <Label for="txtPass">Password</Label>
+                        <Input id="txtPass" type="password" name="password"
+                            placeholder="Enter your password" required />
+                    </FormGroup>
+                    <Button color="primary" name="submitLogin" type="submit">Login</Button>
+                </Form>
+                <p className="p1" onClick={this.redirectToRegister}>Don't have an account?</p>
+            </div>
+        );
 
-    axios({
-      method: 'POST',
-      url: 'http://localhost/webapplication1/Login',
-      headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-      data: loginInfo
-    })
-      .then((response) => {
-        console.log(response);
-        alert("Successfully logged in!!");
-        this.props.loggedUser(user);
-        console.log(user);
-      })
-      .catch((error) => {
-        console.log('error');
-        alert("Wrong Username/Password! please try again.");
-      });
-  }
-
-  redirectRegister = () => {
-    this.props.changePage('register');
-  }
-  //// no more routing and linking in login simple pass of data between components (this form <--> wrapper)
-  render() {
-
-    return (
-      <div className="loginBox">
-        <img src={avatar} alt='login avatar' className="avatar" />
-        <h1>Login</h1>
-        <Form id="loginForm" onSubmit={this.onSubmitHander}>
-          <FormGroup className="mb-2 mb-sm-0">
-            <Label for="txtUser">Username</Label>
-            <Input type="text" name="username" id="txtUser"
-              placeholder="Enter your username" onChange={this.resetState} required />
-          </FormGroup>
-          <FormGroup className="mb-2 mb-sm-0">
-            <Label for="txtPass">Password</Label>
-            <Input type="password" name="password" id="txtPass"
-              placeholder="Enter your password" onChange={this.resetState} required />
-          </FormGroup>
-          <Button color="primary" name="submitLogin" type="submit">Login</Button>
-        </Form>
-        <p className="p1" onClick={this.redirectRegister}>Don't have an account?</p>
-
-      </div>
-    );
-  }
+    }
 
 }
 

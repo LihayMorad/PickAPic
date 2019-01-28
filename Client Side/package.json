@@ -9,7 +9,7 @@
     "axios": "^0.18.0",
     "exif-js": "^2.3.0",
     "google-maps-react": "^2.0.2",
-    "rc-slider": "^8.6.3",
+    "rc-slider": "^8.6.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-redux": "^6.0.0",

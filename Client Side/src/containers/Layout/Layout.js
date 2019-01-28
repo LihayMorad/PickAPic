@@ -8,24 +8,14 @@ import Details from '../../containers/PictureDetails/PictureDetailsForm';
 class Layout extends Component {
     ////routing is currently done only in layout as it should
 
-    state = {
-        triggerMapIdle: {}
-    }
-
-    handleMapIdle = triggerRef => { this.setState({ triggerMapIdle: triggerRef }); }
-
     render() {
 
         return (
             <div>
-                <Toolbar
-                    mapTriggerRef={this.state.triggerMapIdle} />
+                <Toolbar />
 
                 <Switch>
-                    <Route exact path="/" render={() => {
-                        return <MapContainer
-                            mapTriggerRef={this.handleMapIdle} />
-                    }} />
+                    <Route exact path="/" render={() => <MapContainer />} />
                     <Route path="/details" component={Details} />
                 </Switch>
             </div>

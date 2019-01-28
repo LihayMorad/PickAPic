@@ -13,16 +13,16 @@ class Upload extends Component {
         isExif: false, ////if exif data exists in the picture
         xCord: null,
         yCord: null,
-        uploaded: false ////states if the picture was even uploaded to trigger the redirection
+        uploaded: false, ////states if the picture was even uploaded to trigger the redirection
+        file: null
     }
 
     //// handler which activates when a picture is uploaded
     uploadedImageHandler = (event) => {
-        console.log("Upload [uploadedImageHandler]");
-         event.preventDefault();
+        event.preventDefault();
+
         let file = event.target.files[0];
-        console.log('[Upload]', file);
-        
+
         ////exif function that extracts gps
         if (file.type === "image/jpeg") {
             Exif.getData(file, () => {
@@ -34,26 +34,27 @@ class Upload extends Component {
                 };
             });
             this.setState({
-                uploaded: true
+                uploaded: true,
+                file: event.target.files[0]
             });
         }
     }
 
-    componentDidMount() {
-        // console.log('Upload [componentDidMount]');
-    }
-
     componentDidUpdate() {
-        // console.log('Upload [componentDidUpdate]', this.state);
+        // console.log('[Upload] componentDidUpdate', this.state);
     }
 
     ////updating the state with new lat lang values, checking if exif data inn the picture exists and noting that a oicture was uploaded
     updateLatLng = (Lat, Lng) => {
-
         const latFormatted = this.convertToNum(Lat);
+        console.log('Upload -> updateLatLng -> latFormatted', latFormatted);
         const lngFormatted = this.convertToNum(Lng);
-        this.setState({ xCord: latFormatted, yCord: lngFormatted, isExif: true });
-
+        console.log('Upload -> updateLatLng -> lngFormatted', lngFormatted);
+        this.setState({
+            xCord: latFormatted,
+            yCord: lngFormatted,
+            isExif: true
+        });
     }
 
     ////function that converts the lat long arrays into single double values
@@ -71,10 +72,17 @@ class Upload extends Component {
                         onChange={this.uploadedImageHandler} />
                     <FontAwesomeIcon icon={faCloudUploadAlt} /> Upload
                 </label>
-               { this.state.uploaded ? (<Redirect push to="/details" />) : null}
+                {this.state.uploaded ? (<Redirect push to={{
+                    pathname: '/details',
+                    state: {
+                        isexif: this.state.isExif,
+                        xcord: this.state.xCord,
+                        ycord: this.state.yCord,
+                        image: this.state.file
+                    }
+                }} />) : null}
             </div>
         );
-
     }
 }
 

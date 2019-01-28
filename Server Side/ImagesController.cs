@@ -21,7 +21,6 @@ namespace WebApplication1.Controllers
 
     public class ImagesController : ApiController
     {
-        
         //// Get image by ID
         [Route("api/image/{id}")]
         public HttpResponseMessage GetImages(string id)
@@ -58,39 +57,39 @@ namespace WebApplication1.Controllers
             {
                 if (neY < swY)
                 {
-                    m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<='" + neX + "' AND Lat >= '" + swX + "' AND (Lng<='" + neY + "' OR Lng >= '" + swY + "');";
+                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3});",
+                        neX, swX, neY, swY);
                 }
+
                 else
                 {
-                    m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<='" + neX + "' AND Lat >= '" + swX + "' AND Lng<='" + neY + "' AND Lng >= '" + swY + "';";
+                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} ;",
+                        neX, swX, neY, swY);
                 }
             }
             else
             {
                 if (neY < swY)
                 {
-                    m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<=" + neX + " AND Lat >= " + swX + " AND (Lng<=" + neY + " OR Lng >= " + swY + ") " +
-                        "AND calc_dist(" + centerX + "," + centerY + ", Lat, Lng) <=" + rad;
-
-                    //m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<='" + neX + "' AND Lat >= '" + swX + "' AND (Lng<='" + neY + "' OR Lng >= '" + swY + "') " +
-                    //    "AND (('" + centerX + "' - Lat)*('" + centerX + "' - Lat) + ('" + centerY + "' - Lng)*('" + centerY + "' - Lng))<= '" + rad * rad + "';";
+                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3}) AND calc_dist({4},{5}, Lat, Lng) <= {6};",
+                        neX, swX, neY, swY, centerX, centerY, rad);
                 }
                 else
                 {
-                    m_QueryStr = "SELECT * FROM gis.quickloadphotos WHERE Lat<='" + neX + "' AND Lat >= '" + swX + "' AND Lng<='" + neY + "' AND Lng >= '" + swY + "' " +
-                        "AND calc_dist(" + centerX + "," + centerY + ", Lat, Lng) <=" + rad;
+                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} AND calc_dist({4},{5}, Lat, Lng) <= {6}",
+                        neX, swX, neY, swY, centerX, centerY, rad);
                 }
             }
 
             m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
 
             dataReader = m_Cmd.ExecuteReader();
-            
+
             List<QuickPhoto> lst = new List<QuickPhoto>();
 
-            while ( dataReader.Read() )
+            while (dataReader.Read())
             {
-                if (!dataReader.IsDBNull(3) )
+                if (!dataReader.IsDBNull(2))
                 {
                     QuickPhoto temp = new QuickPhoto(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetDouble(2), dataReader.GetDouble(3), dataReader.GetDouble(4), dataReader.GetInt32(5), dataReader.GetString(6));
                     lst.Add(temp);
@@ -107,7 +106,7 @@ namespace WebApplication1.Controllers
             QuickPhoto[] arr = new QuickPhoto[lst.Count];
             lst.CopyTo(arr);
 
-            return  arr;
+            return arr;
         }
 
         private void deletePhoto(string ID)
@@ -122,7 +121,7 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
             m_Conn.Open();
 
-            m_QueryStr = "DELETE FROM quickloadphotos WHERE ID ='" + ID + "'";
+            m_QueryStr = string.Format(@"DELETE FROM quickloadphotos WHERE ID = '{0}'", ID);
 
             m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
 
@@ -132,7 +131,7 @@ namespace WebApplication1.Controllers
 
             m_Conn.Open();
 
-            m_QueryStr = "DELETE FROM photodetails WHERE ID ='" + ID + "'";
+            m_QueryStr = string.Format(@"DELETE FROM photodetails WHERE ID = '{0}'", ID);
 
             m_Cmd2 = new MySqlCommand(m_QueryStr, m_Conn);
 
@@ -182,7 +181,6 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
             m_Conn.Open();
 
-            // SELECT Username, Description, UploadDate FROM gis.photodetails WHERE ID = "7340f8c3b24a40a0bdc5d657e41e8784";
             m_QueryStr = "SELECT Username, Description, UploadDate FROM gis.photodetails WHERE ID ='" + id + "'";
 
             m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
@@ -241,6 +239,5 @@ namespace WebApplication1.Controllers
 
             return arr;
         }
-
     }
 }

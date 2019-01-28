@@ -16,7 +16,7 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 import './Filters.css';
 
-const AllFilters = { id: "AllFiltersID", name: "AllFilters", value: "AllFilters", label: "All Filters" };
+const AllFiltersFilter = { id: "AllFiltersID", name: "AllFilters", value: "AllFilters", label: "All Filters" };
 let filters = [
     { id: "PanoramaFilterID", name: "PanoramaFilter", value: "Panorama", label: "Panorama" },
     { id: "SunriseFilterID", name: "SunriseFilter", value: "Sunrise", label: "Sunrise" },
@@ -35,7 +35,7 @@ class Filters extends Component {
 
     toggle = () => { this.setState({ dropdownOpen: !this.state.dropdownOpen }); }
 
-    handleFilterChange = filter => { this.props.onFiltersChange(filter.value, filter.checked); this.props.mapTriggerRef(); }
+    handleFilterChange = filter => { this.props.onFiltersChange(filter.value, filter.checked); }
 
     render() {
         // console.log('this.props: ', this.props.filtersArray);
@@ -49,11 +49,12 @@ class Filters extends Component {
 
                     <DropdownMenu id="filtersDropdown">
                         <DropdownItem header>Choose Map Filters</DropdownItem>
-                        <Filter {...AllFilters} checked={this.props.filtersArray[AllFilters.value]} onClick={(e) => { this.handleFilterChange(e.target) }} />
+                        <Filter {...AllFiltersFilter} checked={this.props.filtersArray[AllFiltersFilter.value]} onClick={e => { this.handleFilterChange(e.target) }} />
                         <DropdownItem divider />
                         {/* PERFORMANCE ISSUE */}
-                        {filters.map((filter) => <Filter key={filter.id} {...filter} checked={this.props.filtersArray[filter.value]}
-                            onClick={(e) => { this.handleFilterChange(e.target); }} />)}
+                        {filters.map((filter) => <Filter key={filter.id} {...filter}
+                            checked={this.props.filtersArray[filter.value]}
+                            onClick={e => { this.handleFilterChange(e.target); }} />)}
                         {/* PERFORMANCE ISSUE */}
                     </DropdownMenu>
                 </ButtonDropdown>

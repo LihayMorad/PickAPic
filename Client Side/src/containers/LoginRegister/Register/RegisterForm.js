@@ -6,67 +6,57 @@ import './RegisterForm.css';
 
 class RegisterForm extends Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            errormsg: null
-        };
-
-    }
-
     onSubmitHander = (event) => {
 
         event.preventDefault();
 
-        const registerInfo = new URLSearchParams();
         const username = event.target.txtUser.value;
+        const registerInfo = new URLSearchParams();
         registerInfo.append('username', event.target.txtUser.value);
         registerInfo.append('password', event.target.txtPass.value);
 
+        // console.log(event.target.txtUser.value, event.target.txtPass.value);
+
         axios({
-            method: 'post',
+            method: 'POST',
             url: 'http://localhost/webapplication1/Registration',
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             data: registerInfo
         })
             .then((response) => {
-                console.log(response);
-                alert("Successfully registered, you are logged in now.")
-                console.log(username);
-                this.props.loggedUser(username);
+                // console.log('response', response);
+                localStorage.setItem('access-token', response.data);
+                this.props.handleLoggedUser(username);
+                alert("Hi, " + username + ", you have been successfully registered! You're logged in.");
             })
             .catch((error) => {
-                console.log(error);
+                // console.error('error', error);
                 alert("Username Already Exists! Please try again.")
             });
     }
 
-    redirectLogin = () => {
-        this.props.changePage('login');
-    }
+    redirectToLogin = () => { this.props.handleFormChange('login'); }
 
-    //// no more routing and linking in register simple pass of data between components (this form <--> wrapper)
     render() {
+
         return (
             <div className="registerBox">
                 <img src={avatar} alt='register avatar' className="avatar" />
                 <h1>Register</h1>
-
                 <Form id="registerForm" onSubmit={this.onSubmitHander}>
                     <FormGroup className="mb-2 mb-sm-0">
                         <Label for="txtUser">Username</Label>
-                        <Input type="text" name="username" id="txtUser"
-                            placeholder="Enter your username" onChange={this.resetState} required />
+                        <Input id="txtUser" type="text" name="username"
+                            placeholder="Enter your username" required />
                     </FormGroup>
                     <FormGroup className="mb-2 mb-sm-0">
                         <Label for="txtPass">Password</Label>
-                        <Input type="password" name="password" id="txtPass"
-                            placeholder="Enter your password" onChange={this.resetState} required />
+                        <Input id="txtPass" type="password" name="password"
+                            placeholder="Enter your password" required />
                     </FormGroup>
-                    <Button color="primary" name="submitRegister">Register</Button>
+                    <Button color="primary" name="submitRegister" type="submit">Register</Button>
                 </Form>
-                <p className="p1" onClick={this.redirectLogin}>Already A User?</p>
+                <p className="p1" onClick={this.redirectToLogin}>Already A User?</p>
             </div>
         );
     }

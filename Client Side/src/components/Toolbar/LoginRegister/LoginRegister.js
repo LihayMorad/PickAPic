@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import LoginRegisterContainer from '../../../containers/LoginRegister/LoginRegisterContainer';
+import LoginRegisterFormContainer from '../../../containers/LoginRegister/LoginRegisterFormContainer';
+
+import axios from 'axios';
 
 import './LoginRegister.css';
 
@@ -11,62 +13,72 @@ class LoginRegister extends Component {
 
     state = {
         modalIsOpen: false,
-        view: 'Login',
         isLogged: false,
-        userLogged: "",
+        userLoggedIn: "",
         buttonText: "Login/Register"
     }
 
     toggleModal = () => {
-        this.setState({
-            modalIsOpen: !this.state.modalIsOpen
-        });
+        this.setState({ modalIsOpen: !this.state.modalIsOpen });
     }
 
     toggleUser = username => {
         if (username) {
-            const user = username;
             this.setState({
-                userLogged: user,
-                modalIsOpen: !this.state.modalIsOpen,
-                buttonText: "Logged as: " + user
+                modalIsOpen: false,
+                isLogged: true,
+                userLoggedIn: username,
+                buttonText: " Logged as: " + username
             })
         }
     }
 
-    componentDidMount() {
-        // console.log('[LoginRegister] componentDidMount');
+    componentWillMount() {
+        // console.log('[LoginRegister] componentWillMount');
 
-        if (this.props.loggedIn) {
-            const isLogged = this.props.loggedIn;
-            this.setState({
-                isLogged: isLogged
+        const localStorageAccessToken = localStorage.getItem("access-token");
+        const accessToken = new URLSearchParams();
+        accessToken.append('accessToken', localStorageAccessToken);
+
+        // for (const param of accessToken) console.log('[LoginRegister]', param);
+
+        axios({
+            method: 'POST',
+            url: 'http://localhost/webapplication1/CheckAccessToken',
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            data: accessToken
+        })
+            .then(response => {
+                // console.log("[CheckAccessToken] response.data - username: ", response.data);
+                this.toggleUser(response.data);
             })
-        }
+            .catch(error => {
+                // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
+            });
+
     }
 
     componentDidUpdate() {
         // console.log('[LoginRegister] componentDidUpdate');
-
     }
 
     render() {
-        // console.log('[LoginRegister] render');
-        // console.log(this.state);
 
-        // const buttonText = this.state.isLogged ? "Logged as " + this.state.userLogged : "Login/Register";
         return (
             <div>
-                <Button color="primary" id="loginButton"
-                    title="Login/Register" onClick={this.toggleModal}>
+                <Button
+                    color="primary"
+                    id="loginButton"
+                    title="Login/Register"
+                    onClick={this.toggleModal}>
                     <FontAwesomeIcon icon={faUser} /> {this.state.buttonText}
                 </Button>
-                <LoginRegisterContainer
-                    title={this.state.view}
+
+                <LoginRegisterFormContainer
                     isOpen={this.state.modalIsOpen}
                     toggleModal={this.toggleModal}
-                    toggleUsername={this.toggleUser}
-                />
+                    toggleUser={this.toggleUser} />
+
             </div>
         );
 

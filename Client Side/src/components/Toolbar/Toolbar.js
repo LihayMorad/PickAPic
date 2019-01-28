@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import Logo from './Logo/Logo';
 import SearchInput from './SearchInput/SearchInput';
 import Upload from './Upload/Upload';
@@ -12,42 +11,19 @@ import './Toolbar.css';
 
 class Toolbar extends Component {
 
-    constructor(props) {
-        super(props);
+    state = {
+        isOpen: false,
+    };
 
-        this.state = {
-            isOpen: false,
-            isLoggedIn: false
-        };
+    componentDidMount() {
+        // console.log('[Toolbar] componentDidMount');
     }
 
     toggleMobileToolbar = () => {
         this.setState({ isOpen: !this.state.isOpen });
     }
 
-    componentDidMount() {
-
-        // axios({
-        //     method: 'GET',
-        //     url: 'http://localhost/webapplication1/hasCookie',
-
-        // })
-        //     .then((response) => {
-        //         console.log(response);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     })
-
-        // this.setState({
-        //     // isLoggedIn: 
-        // });
-
-    }
-
     render() {
-        // console.log("[Toolbar state]", this.state);
-        // console.log('[this.props.radiusChange]',this.props.radiusChange);
         return (
             <div>
 
@@ -70,15 +46,13 @@ class Toolbar extends Component {
 
                             {/* Categories (Filters) Button */}
                             <NavItem className="navBtn">
-                                <Filters
-                                    mapTriggerRef={this.props.mapTriggerRef} />
+                                <Filters />
                             </NavItem>
 
 
                             {/* Search by radius */}
                             <NavItem className="navBtn">
-                                <RadiusSlider
-                                    mapTriggerRef={this.props.mapTriggerRef} />
+                                <RadiusSlider />
                             </NavItem>
 
 
@@ -91,7 +65,7 @@ class Toolbar extends Component {
 
                         {/* Login/Register Button  */} {/* SHOULD BE RENDRED ON ALL PAGES */}
                         <NavItem className="navBtn">
-                            <LoginRegister loggedIn={this.state.isLoggedIn} />
+                            <LoginRegister />
                         </NavItem>
 
                     </Collapse>
