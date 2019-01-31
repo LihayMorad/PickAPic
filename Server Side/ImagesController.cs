@@ -53,17 +53,21 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
             m_Conn.Open();
 
+
+
+
+
             if (rad == 0)
             {
                 if (neY < swY)
                 {
-                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3});",
+                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3});",
                         neX, swX, neY, swY);
                 }
 
                 else
                 {
-                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} ;",
+                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} ;",
                         neX, swX, neY, swY);
                 }
             }
@@ -71,12 +75,12 @@ namespace WebApplication1.Controllers
             {
                 if (neY < swY)
                 {
-                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3}) AND calc_dist({4},{5}, Lat, Lng) <= {6};",
+                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3}) AND calc_dist({4},{5}, Lat, Lng) <= {6};",
                         neX, swX, neY, swY, centerX, centerY, rad);
                 }
                 else
                 {
-                    m_QueryStr = string.Format(@"SELECT * FROM gis.quickloadphotos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} AND calc_dist({4},{5}, Lat, Lng) <= {6}",
+                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} AND calc_dist({4},{5}, Lat, Lng) <= {6}",
                         neX, swX, neY, swY, centerX, centerY, rad);
                 }
             }
@@ -109,7 +113,7 @@ namespace WebApplication1.Controllers
             return arr;
         }
 
-        private void deletePhoto(string ID)
+        private void deletePhoto(string id)
         {
             MySqlConnection m_Conn;
             string m_QueryStr;
@@ -121,27 +125,26 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
             m_Conn.Open();
 
-            m_QueryStr = string.Format(@"DELETE FROM quickloadphotos WHERE ID = '{0}'", ID);
+            ////old query
+            //m_QueryStr = string.Format(@"DELETE FROM gis.photos WHERE ID = '{0}'", ID);
 
-            m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
+            //m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
+
+            ////stored procedure
+            m_Cmd = new MySqlCommand("deletePhoto", m_Conn);
+
+            m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            m_Cmd.Parameters.AddWithValue("id", id);
+            ////
 
             dataReader = m_Cmd.ExecuteReader();
 
             m_Conn.Close();
 
-            m_Conn.Open();
-
-            m_QueryStr = string.Format(@"DELETE FROM photodetails WHERE ID = '{0}'", ID);
-
-            m_Cmd2 = new MySqlCommand(m_QueryStr, m_Conn);
-
-            dataReader = m_Cmd2.ExecuteReader();
-
-            m_Conn.Close();
-
             //// delete photo from folder
-            string filepath = HttpContext.Current.Server.MapPath("~//photos//" + ID + ".jpg");
-            string thumbnailpath = HttpContext.Current.Server.MapPath("~//photos//thumbnail_" + ID + ".jpg");
+            string filepath = HttpContext.Current.Server.MapPath("~//photos//" + id + ".jpg");
+            string thumbnailpath = HttpContext.Current.Server.MapPath("~//photos//thumbnail_" + id + ".jpg");
 
             if (File.Exists(filepath))
             {
@@ -181,9 +184,18 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
             m_Conn.Open();
 
-            m_QueryStr = "SELECT Username, Description, UploadDate FROM gis.photodetails WHERE ID ='" + id + "'";
+            ////old query
+            //m_QueryStr = "SELECT Username, Description, UploadDate FROM gis.photodetails WHERE ID ='" + id + "'";
 
-            m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
+            //m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
+
+            ////stored procedure
+            m_Cmd = new MySqlCommand("getPhotoDetails", m_Conn);
+
+            m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            m_Cmd.Parameters.AddWithValue("id", id);
+            ////
 
             dataReader = m_Cmd.ExecuteReader();
 
@@ -191,7 +203,7 @@ namespace WebApplication1.Controllers
 
             while (dataReader.Read())
             {
-                PhotoDetails temp = new PhotoDetails(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetString(2));
+                PhotoDetails temp = new PhotoDetails(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetString(2), dataReader.GetString(3), dataReader.GetInt32(4), dataReader.GetDouble(5), dataReader.GetDouble(6));
                 lst.Add(temp);
             }
 
@@ -217,9 +229,19 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
             m_Conn.Open();
 
-            m_QueryStr = "SELECT ID, Username, Description, UploadDate FROM photodetails JOIN quickloadphotos USING (ID) WHERE Lat = '" + lat + "' and Lng = '" + lng + "';";
+            ////old query
+            //m_QueryStr = "SELECT ID, Username, Description, UploadDate FROM photodetails JOIN quickloadphotos USING (ID) WHERE Lat = '" + lat + "' and Lng = '" + lng + "';";
 
-            m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
+            //m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
+
+            ////stored procedure
+            m_Cmd = new MySqlCommand("getAllSpecificMarkerPhotos", m_Conn);
+
+            m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            m_Cmd.Parameters.AddWithValue("lat", lat);
+            m_Cmd.Parameters.AddWithValue("lng", lng);
+            ////
 
             dataReader = m_Cmd.ExecuteReader();
 
