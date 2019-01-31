@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
+import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
 import { connect } from 'react-redux';
 
 import FullsizeMarker from '../FullsizeMarker/FullsizeMarker';
-import Spinner from '../../components/Spinner/Spinner';
 
 // main https://www.npmjs.com/package/google-maps-react
 // https://scotch.io/tutorials/react-apps-with-the-google-maps-api-and-google-maps-react
@@ -31,6 +30,7 @@ class MapContainer extends Component {
   state = {
     map: {},
     showingModalWindow: false,  // hides or the shows the fullscreen Marker Modal
+    showingInfoWindow: true,
     activeMarker: {},
     markersArray: []
   };
@@ -43,11 +43,10 @@ class MapContainer extends Component {
           lat: userlocation.coords.latitude,
           lng: userlocation.coords.longitude
         }
-        // console.log('​MapContainer -> getGeoLocation -> currentLatLng', currentLatLng);
-        // console.log('​MapContainer -> getGeoLocation -> watchID', watchID);
+        console.log('​MapContainer -> getGeoLocation -> currentLatLng', currentLatLng);
         this.setState({ currentLatLng, watchID: watchID });
       },
-        (error) => { console.error('Navigator.geolocation error: ', error.message); },
+        (error) => { console.warn('Navigator.geolocation error: ', error.message); },
         { timeout: 3000 }); // after 3 seconds without answer, call the error function above
     }
     else { console.log('Geolocation is not supported for this Browser/OS.'); }
@@ -61,8 +60,8 @@ class MapContainer extends Component {
   onMapIdle = (mapProps, map) => {
     console.log("​[MapContainer] > onMapIdle")
 
-    let mapCenter = null;
-    let mapBounds = null;
+    let mapCenter = {};
+    let mapBounds = {};
     let currRadius = this.props.radius; // from store ("global state")
 
     const mapParams = {};
@@ -97,7 +96,8 @@ class MapContainer extends Component {
 
     axios('http://localhost/webapplication1/api/numOfPhotos/', { params: mapParams })
       .then(response => {
-        // console.table(response.data);
+        console.table(response.data);
+        console.log(response.data);
         const markers = response.data.filter(marker => this.props.filtersArray[marker.filters])
           .map((marker) => {
             return <Marker
@@ -133,8 +133,8 @@ class MapContainer extends Component {
     // console.log('[MapContainer] > componentDidMount');
   }
 
-  componentUnMount() {
-    // console.log('[MapContainer] > componentDidMount');
+  componentWillUnmount() {
+    // console.log('[MapContainer] > componentWillUnmount');
     navigator.geolocation.clearWatch(this.state.watchID);
   }
 
@@ -158,10 +158,6 @@ class MapContainer extends Component {
   render() {
     // console.log('[MapContainer] render');
 
-    if (!this.props.loaded) {
-      return <Spinner />
-    }
-
     return (
 
       <div>
@@ -176,6 +172,12 @@ class MapContainer extends Component {
           onIdle={this.onMapIdle}>
 
           {this.state.markersArray}
+
+          <InfoWindow
+            visible={this.state.showingInfoWindow}
+            position={this.state.currentLatLng}>
+            <h5>{"You are here!"}</h5>
+          </InfoWindow>
 
         </Map>
 

@@ -3,7 +3,9 @@ import { Redirect } from 'react-router-dom';
 import { Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 import Exif from 'exif-js';
+
 import './Upload.css';
 
 ////upload is no longer state-less its a class now
@@ -20,14 +22,55 @@ class Upload extends Component {
     //// handler which activates when a picture is uploaded
     uploadedImageHandler = (event) => {
         event.preventDefault();
+        console.log('Upload -> uploadedImageHandler -> event', event.target)
+
+        // const localStorageAccessToken = localStorage.getItem("access-token");
+        // if (localStorageAccessToken) {
+        //     const accessToken = new URLSearchParams();
+        //     accessToken.append('accessToken', localStorageAccessToken);
+
+        //     axios({
+        //         method: 'POST',
+        //         url: 'http://localhost/webapplication1/CheckAccessToken',
+        //         headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        //         data: accessToken
+        //     })
+        //         .then(response => {
+        //             // console.log("[CheckAccessToken] response.data - username: ", response.data);
+
+        //             let file = event.target.files[0];
+
+        //             ////exif function that extracts gps
+        //             if (file.type === "image/jpeg") {
+        //                 Exif.getData(file, () => {
+        //                     const lat = Exif.getTag(file, 'GPSLatitude');
+        //                     const lng = Exif.getTag(file, 'GPSLongitude');
+
+        //                     if (lat !== undefined && lng !== undefined) {
+        //                         this.updateLatLng(lat, lng);
+        //                     };
+        //                 });
+        //                 this.setState({
+        //                     uploaded: true,
+        //                     file: event.target.files[0]
+        //                 });
+        //             }
+
+        //         })
+        //         .catch(error => {
+        //             alert("Please login to upload photos!");
+        //             // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
+        //         });
+        // }
+        // else { alert("Please login to upload photos!"); }
 
         let file = event.target.files[0];
 
         ////exif function that extracts gps
         if (file.type === "image/jpeg") {
             Exif.getData(file, () => {
-                var lat = Exif.getTag(file, 'GPSLatitude');
-                var lng = Exif.getTag(file, 'GPSLongitude');
+                const lat = Exif.getTag(file, 'GPSLatitude');
+                const lng = Exif.getTag(file, 'GPSLongitude');
 
                 if (lat !== undefined && lng !== undefined) {
                     this.updateLatLng(lat, lng);
@@ -38,6 +81,7 @@ class Upload extends Component {
                 file: event.target.files[0]
             });
         }
+
     }
 
     componentDidUpdate() {
@@ -47,9 +91,8 @@ class Upload extends Component {
     ////updating the state with new lat lang values, checking if exif data inn the picture exists and noting that a oicture was uploaded
     updateLatLng = (Lat, Lng) => {
         const latFormatted = this.convertToNum(Lat);
-        console.log('Upload -> updateLatLng -> latFormatted', latFormatted);
         const lngFormatted = this.convertToNum(Lng);
-        console.log('Upload -> updateLatLng -> lngFormatted', lngFormatted);
+        console.log('Upload -> updateLatLng -> latFormatted', latFormatted, "latFormatted", lngFormatted);
         this.setState({
             xCord: latFormatted,
             yCord: lngFormatted,

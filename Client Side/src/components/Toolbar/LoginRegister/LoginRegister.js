@@ -37,25 +37,27 @@ class LoginRegister extends Component {
         // console.log('[LoginRegister] componentWillMount');
 
         const localStorageAccessToken = localStorage.getItem("access-token");
-        const accessToken = new URLSearchParams();
-        accessToken.append('accessToken', localStorageAccessToken);
+        if (localStorageAccessToken) {
+            const accessToken = new URLSearchParams();
+            accessToken.append('accessToken', localStorageAccessToken);
 
-        // for (const param of accessToken) console.log('[LoginRegister]', param);
+            // for (const param of accessToken) console.log('[LoginRegister]', param);
 
-        axios({
-            method: 'POST',
-            url: 'http://localhost/webapplication1/CheckAccessToken',
-            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-            data: accessToken
-        })
-            .then(response => {
-                // console.log("[CheckAccessToken] response.data - username: ", response.data);
-                this.toggleUser(response.data);
+            axios({
+                method: 'POST',
+                url: 'http://localhost/webapplication1/CheckAccessToken',
+                headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                data: accessToken
             })
-            .catch(error => {
-                // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
-            });
-
+                .then(response => {
+                    // console.log("[CheckAccessToken] response.data - username: ", response.data);
+                    console.log(response);
+                    this.toggleUser(response.data);
+                })
+                .catch(error => {
+                    // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
+                });
+        }
     }
 
     componentDidUpdate() {
