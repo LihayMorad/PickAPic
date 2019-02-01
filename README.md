@@ -1,8 +1,9 @@
 # PickAPic
 
+***Currently I'm recreating this project with ReactJS in another [branch](https://github.com/LihayMorad/PickAPic/tree/recreate-with-react).***
+
+
 ### A website for photographers to share and find hotspot photo locations.
-
-
 
 This project was made during a course I took at my college.
 
@@ -10,10 +11,10 @@ I had to learn HTML, CSS and JavaScript on my own which was very interesting and
 
 
 
-> The client-side: HTML, CSS and JavaScript, jQuary, Ajax. API: Google Maps API (plus 'Places' library).
+> Client-Side: HTML, CSS and Javascript, jQuery, Ajax, Google Maps API.
 
 
-> The server-side: C# (I used ASP .NET Web API with IIS Server)
+> Server-Side: ASP .NET Web API with IIS Server - C#
 
 
 
