@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Toggle from 'react-toggle'; // https://github.com/aaronshaf/react-toggle
 import { Label } from 'reactstrap';
@@ -15,7 +16,9 @@ const filter = (props) => {
             <Toggle
                 {...props}
                 aria-label={props.label}
-                onChange={(e) => { console.log(e.target.name + " has changed to: " + (e.target.checked ? "checked" : "unchecked")); }}
+                onChange={(e) => {
+                    // console.log(e.target.name + " has changed to: " + (e.target.checked ? "checked" : "unchecked"));
+                }}
             />
             <span>{props.label}</span>
         </Label>
@@ -24,3 +27,12 @@ const filter = (props) => {
 }
 
 export default filter;
+
+filter.propTypes = {
+    id: PropTypes.string,
+    name: PropTypes.string,
+    value: PropTypes.string,
+    label: PropTypes.string,
+    checked: PropTypes.bool,
+    onClick: PropTypes.func
+}

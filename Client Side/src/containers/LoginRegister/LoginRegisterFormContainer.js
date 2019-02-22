@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import LoginForm from './Login/LoginForm';
 import RegisterForm from './Register/RegisterForm';
@@ -45,3 +46,28 @@ class loginRegisterFormContainer extends Component {
 }
 
 export default loginRegisterFormContainer;
+
+loginRegisterFormContainer.propTypes = {
+    isOpen: PropTypes.bool,
+    toggleModal: PropTypes.func,
+    toggleUser: PropTypes.func
+}
+
+LoginForm.propTypes = {
+    handleFormChange: PropTypes.func,
+    handleLoggedUser: PropTypes.func
+}
+
+RegisterForm.propTypes = {
+    handleFormChange: PropTypes.func,
+    handleLoggedUser: PropTypes.func
+}
+
+Button.propTypes = {
+    onClick: PropTypes.func
+}
+
+Modal.propTypes = {
+    isOpen: PropTypes.bool,
+    toggle: PropTypes.func,
+}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
@@ -8,11 +9,10 @@ import Exif from 'exif-js';
 
 import './Upload.css';
 
-////upload is no longer state-less its a class now
 class Upload extends Component {
 
     state = {
-        isExif: false, ////if exif data exists in the picture
+        isExif: true, ////if exif data exists in the picture
         xCord: null,
         yCord: null,
         uploaded: false, ////states if the picture was even uploaded to trigger the redirection
@@ -21,67 +21,55 @@ class Upload extends Component {
 
     //// handler which activates when a picture is uploaded
     uploadedImageHandler = (event) => {
-        event.preventDefault();
-        console.log('Upload -> uploadedImageHandler -> event', event.target)
+        event.persist();
+        // event.preventDefault();
 
-        // const localStorageAccessToken = localStorage.getItem("access-token");
-        // if (localStorageAccessToken) {
-        //     const accessToken = new URLSearchParams();
-        //     accessToken.append('accessToken', localStorageAccessToken);
+        if (event.target.files[0]) {
+            const localStorageAccessToken = localStorage.getItem("access-token");
+            if (localStorageAccessToken) {
+                const accessToken = new URLSearchParams();
+                accessToken.append('accessToken', localStorageAccessToken);
 
-        //     axios({
-        //         method: 'POST',
-        //         url: 'http://localhost/webapplication1/CheckAccessToken',
-        //         headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-        //         data: accessToken
-        //     })
-        //         .then(response => {
-        //             // console.log("[CheckAccessToken] response.data - username: ", response.data);
+                axios({
+                    method: 'POST',
+                    url: 'http://localhost/webapplication1/CheckAccessToken',
+                    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                    data: accessToken
+                })
+                    .then(response => {
+                        console.log("[CheckAccessToken] response.data - username: ", response.data);
 
-        //             let file = event.target.files[0];
+                        let file = event.target.files[0];
 
-        //             ////exif function that extracts gps
-        //             if (file.type === "image/jpeg") {
-        //                 Exif.getData(file, () => {
-        //                     const lat = Exif.getTag(file, 'GPSLatitude');
-        //                     const lng = Exif.getTag(file, 'GPSLongitude');
+                        ////exif function that extracts gps
+                        if (file.type === "image/jpeg") {
+                            Exif.getData(file, () => {
+                                const lat = Exif.getTag(file, 'GPSLatitude');
+                                const lng = Exif.getTag(file, 'GPSLongitude');
 
-        //                     if (lat !== undefined && lng !== undefined) {
-        //                         this.updateLatLng(lat, lng);
-        //                     };
-        //                 });
-        //                 this.setState({
-        //                     uploaded: true,
-        //                     file: event.target.files[0]
-        //                 });
-        //             }
+                                if (lat !== undefined && lng !== undefined)
+                                    this.updateLatLng(lat, lng);
+                                else
+                                    this.setState({ isExif: false });
+                            });
+                            this.setState({
+                                uploaded: true,
+                                file: event.target.files[0]
+                            });
+                        }
+                        else
+                            alert("Only 'JPG/JPEG' files are allowed to upload!");
 
-        //         })
-        //         .catch(error => {
-        //             alert("Please login to upload photos!");
-        //             // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
-        //         });
-        // }
-        // else { alert("Please login to upload photos!"); }
-
-        let file = event.target.files[0];
-
-        ////exif function that extracts gps
-        if (file.type === "image/jpeg") {
-            Exif.getData(file, () => {
-                const lat = Exif.getTag(file, 'GPSLatitude');
-                const lng = Exif.getTag(file, 'GPSLongitude');
-
-                if (lat !== undefined && lng !== undefined) {
-                    this.updateLatLng(lat, lng);
-                };
-            });
-            this.setState({
-                uploaded: true,
-                file: event.target.files[0]
-            });
+                    })
+                    .catch(error => {
+                        alert("[catch] You have to be logged in to upload photos");
+                        // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
+                    });
+            }
+            else {
+                alert("[no token] You have to be logged in to upload photos");
+            }
         }
-
     }
 
     componentDidUpdate() {
@@ -92,7 +80,6 @@ class Upload extends Component {
     updateLatLng = (Lat, Lng) => {
         const latFormatted = this.convertToNum(Lat);
         const lngFormatted = this.convertToNum(Lng);
-        console.log('Upload -> updateLatLng -> latFormatted', latFormatted, "latFormatted", lngFormatted);
         this.setState({
             xCord: latFormatted,
             yCord: lngFormatted,
@@ -115,7 +102,7 @@ class Upload extends Component {
                         onChange={this.uploadedImageHandler} />
                     <FontAwesomeIcon icon={faCloudUploadAlt} /> Upload
                 </label>
-                {this.state.uploaded ? (<Redirect push to={{
+                {this.state.uploaded ? <Redirect to={{ // was Redirect *push* to...
                     pathname: '/details',
                     state: {
                         isexif: this.state.isExif,
@@ -123,10 +110,18 @@ class Upload extends Component {
                         ycord: this.state.yCord,
                         image: this.state.file
                     }
-                }} />) : null}
+                }} /> : null}
             </div>
         );
     }
 }
 
 export default Upload;
+
+Input.propTypes = {
+    Input: PropTypes.func
+}
+
+Redirect.propTypes = {
+    state: PropTypes.object
+}

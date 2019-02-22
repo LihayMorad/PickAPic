@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Logo from './Logo/Logo';
 import SearchInput from './SearchInput/SearchInput';
 import Upload from './Upload/Upload';
@@ -79,3 +80,11 @@ class Toolbar extends Component {
 }
 
 export default Toolbar;
+
+NavbarToggler.propTypes = {
+    onClick: PropTypes.func
+}
+
+Collapse.propTypes = {
+    isOpen: PropTypes.bool
+}

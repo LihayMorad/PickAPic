@@ -15,7 +15,7 @@ class Layout extends Component {
                 <Toolbar />
 
                 <Switch>
-                    <Route exact path="/" render={() => <MapContainer />} />
+                    <Route exact path="/" component={MapContainer} />
                     <Route path="/details" component={Details} />
                 </Switch>
             </div>

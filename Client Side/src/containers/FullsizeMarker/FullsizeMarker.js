@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
 import axios from 'axios';
 
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -24,7 +24,6 @@ class FullsizeMarker extends PureComponent {
     componentDidUpdate() {
         // console.log('[FullsizeMarker] componentDidUpdate');
         // console.log('[FullsizeMarker] this.props.activeMarker', this.props.activeMarker.markerId);
-
     }
 
     getPhotoDetails = () => {
@@ -88,3 +87,9 @@ class FullsizeMarker extends PureComponent {
 }
 
 export default FullsizeMarker;
+
+FullsizeMarker.propTypes = {
+    FullsizeMarker: PropTypes.object,
+    isOpen: PropTypes.bool,
+    toggleModal: PropTypes.func
+}

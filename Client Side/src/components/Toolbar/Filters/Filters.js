@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../store/actions';
 
@@ -78,3 +78,22 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filters);
+
+Filters.propTypes = {
+    onFiltersChange: PropTypes.func,
+    filtersArray: PropTypes.object,
+}
+
+Filter.propTypes = {
+    id: PropTypes.string,
+    name: PropTypes.string,
+    value: PropTypes.string,
+    label: PropTypes.string,
+    checked: PropTypes.bool,
+    onClick: PropTypes.func
+}
+
+ButtonDropdown.propTypes = {
+    isOpen: PropTypes.bool,
+    toggle: PropTypes.func
+}

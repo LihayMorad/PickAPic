@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
 import avatar from '../../../assets/loginRegister.png';
@@ -27,7 +28,7 @@ class LoginForm extends Component {
                 // console.log('response', response);
                 localStorage.setItem('access-token', response.data);
                 this.props.handleLoggedUser(username);
-                alert("Hi, " + username + ", you're logged in.");
+                alert("Hi " + username + ", you're logged in.");
             })
             .catch(error => {
                 // console.error('error', error);
@@ -65,3 +66,12 @@ class LoginForm extends Component {
 }
 
 export default LoginForm;
+
+LoginForm.propTypes = {
+    handleFormChange: PropTypes.func,
+    handleLoggedUser: PropTypes.func
+}
+
+Form.propTypes = {
+    onSubmitHander: PropTypes.func
+}

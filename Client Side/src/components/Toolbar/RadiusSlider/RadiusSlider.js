@@ -1,6 +1,6 @@
-import './RadiusSlider.css';
-
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Tooltip from 'rc-tooltip';
 import Slider from 'rc-slider';
 import { Button } from 'reactstrap';
@@ -8,6 +8,7 @@ import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../store/actions';
 
+import './RadiusSlider.css';
 import 'rc-slider/assets/index.css';
 // https://github.com/react-component/slider v8.6.1
 
@@ -66,3 +67,7 @@ const mapDispatchToProps = dispatch => { // console.log("mapDispatchToProps");
 
 export default connect(mapStateToProps, mapDispatchToProps)(radiusSlider);
 
+Slider.propTypes = {
+    onAfterChange: PropTypes.func,
+    handleStyle: PropTypes.object
+}

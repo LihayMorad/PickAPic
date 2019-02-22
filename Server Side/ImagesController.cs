@@ -53,39 +53,47 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
             m_Conn.Open();
 
-
-
-
-
             if (rad == 0)
             {
+                m_Cmd = new MySqlCommand("mapBounds", m_Conn);
+                m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                m_Cmd.Parameters.AddWithValue("neX", neX);
+                m_Cmd.Parameters.AddWithValue("swX", swX);
+                m_Cmd.Parameters.AddWithValue("neY", neY);
+                m_Cmd.Parameters.AddWithValue("swY", swY);
+
                 if (neY < swY)
                 {
-                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3});",
-                        neX, swX, neY, swY);
+                    m_Cmd.Parameters.AddWithValue("choice", 1);
                 }
-
                 else
                 {
-                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} ;",
-                        neX, swX, neY, swY);
+                    m_Cmd.Parameters.AddWithValue("choice", 0);
                 }
             }
             else
             {
+                m_Cmd = new MySqlCommand("mapBoundsRadius", m_Conn);
+                m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                m_Cmd.Parameters.AddWithValue("neX", neX);
+                m_Cmd.Parameters.AddWithValue("swX", swX);
+                m_Cmd.Parameters.AddWithValue("neY", neY);
+                m_Cmd.Parameters.AddWithValue("swY", swY);
+                m_Cmd.Parameters.AddWithValue("centerX", centerX);
+                m_Cmd.Parameters.AddWithValue("centerY", centerY);
+                m_Cmd.Parameters.AddWithValue("rad", rad);
+
                 if (neY < swY)
                 {
-                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND (Lng<= {2} OR Lng >= {3}) AND calc_dist({4},{5}, Lat, Lng) <= {6};",
-                        neX, swX, neY, swY, centerX, centerY, rad);
+                    m_Cmd.Parameters.AddWithValue("choice", 1);
                 }
                 else
                 {
-                    m_QueryStr = string.Format(@"SELECT id, thumbnailpath, lat, lng, popularity, manualgps, filters FROM gis.photos WHERE Lat<= {0} AND Lat >= {1} AND Lng<= {2} AND Lng >= {3} AND calc_dist({4},{5}, Lat, Lng) <= {6}",
-                        neX, swX, neY, swY, centerX, centerY, rad);
+                    m_Cmd.Parameters.AddWithValue("choice", 0);
                 }
             }
-
-            m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
 
             dataReader = m_Cmd.ExecuteReader();
 
@@ -216,50 +224,5 @@ namespace WebApplication1.Controllers
             return arr;
         }
 
-        //// Get all photos from server of the same marker
-        //// Builds table info to return to client
-        [Route("api/allMarkersPhotos")]
-        public IEnumerable<QuickPhoto> GetallMarkersPhotos(double lat, double lng)
-        {
-            MySqlConnection m_Conn;
-            string m_QueryStr;
-            MySqlCommand m_Cmd;
-            MySqlDataReader dataReader;
-
-            m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
-            m_Conn.Open();
-
-            ////old query
-            //m_QueryStr = "SELECT ID, Username, Description, UploadDate FROM photodetails JOIN quickloadphotos USING (ID) WHERE Lat = '" + lat + "' and Lng = '" + lng + "';";
-
-            //m_Cmd = new MySqlCommand(m_QueryStr, m_Conn);
-
-            ////stored procedure
-            m_Cmd = new MySqlCommand("getAllSpecificMarkerPhotos", m_Conn);
-
-            m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            m_Cmd.Parameters.AddWithValue("lat", lat);
-            m_Cmd.Parameters.AddWithValue("lng", lng);
-            ////
-
-            dataReader = m_Cmd.ExecuteReader();
-
-            List<QuickPhoto> lst = new List<QuickPhoto>();
-
-            while (dataReader.Read())
-            {
-                QuickPhoto temp = new QuickPhoto(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetString(2), dataReader.GetString(3));
-                lst.Add(temp);
-            }
-
-            dataReader.Close();
-            m_Conn.Close();
-
-            QuickPhoto[] arr = new QuickPhoto[lst.Count];
-            lst.CopyTo(arr);
-
-            return arr;
-        }
     }
 }

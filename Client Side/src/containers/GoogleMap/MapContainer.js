@@ -15,197 +15,229 @@ import FullsizeMarker from '../FullsizeMarker/FullsizeMarker';
 // http://localhost/webapplication1/api/numOfPhotos?neX=87.8672106462741&neY=178.78821655000002&swX=-76.289758795137&swY=-126.01647094999998&rad=0&centerX=0&centerY=0
 
 const mapStyle = {
-  position: 'absolute',
-  width: '100%',
-  height: '100%'
+	position: 'absolute',
+	width: '100%',
+	height: '100%'
 }
 
 const mapContainerStyle = {
-  width: '100%',
-  height: '90%'
+	width: '100%',
+	height: '90%'
 }
 
 class MapContainer extends Component {
 
-  state = {
-    map: {},
-    showingModalWindow: false,  // hides or the shows the fullscreen Marker Modal
-    showingInfoWindow: true,
-    activeMarker: {},
-    markersArray: []
-  };
+	state = {
+		map: {},
+		showingModalWindow: false,
+		showingInfoWindow: true,
+		activeMarker: {},
+		markersArray: []
+	};
 
-  getGeoLocation = () => {
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ watchPosition or getCurrentPosition
-    if (navigator.geolocation) {
-      let watchID = navigator.geolocation.watchPosition(userlocation => {
-        const currentLatLng = {
-          lat: userlocation.coords.latitude,
-          lng: userlocation.coords.longitude
-        }
-        console.log('​MapContainer -> getGeoLocation -> currentLatLng', currentLatLng);
-        this.setState({ currentLatLng, watchID: watchID });
-      },
-        (error) => { console.warn('Navigator.geolocation error: ', error.message); },
-        { timeout: 3000 }); // after 3 seconds without answer, call the error function above
-    }
-    else { console.log('Geolocation is not supported for this Browser/OS.'); }
-  }
+	getGeoLocation = () => {
+		if (navigator.geolocation) {
+			let watchID = navigator.geolocation.watchPosition(userlocation => {
+				const currentLatLng = {
+					lat: userlocation.coords.latitude,
+					lng: userlocation.coords.longitude
+				}
+				this.setState({ currentLatLng, watchID: watchID });
+			},
+				(error) => { console.warn('Navigator.geolocation error: ', error.message); },
+				{ timeout: 3000, enableHighAccuracy: true }); // after 3 seconds without answer, call the error function above
+		}
+		else { console.log('Geolocation is not supported for this Browser/OS.'); }
+	}
 
-  onMapReady = (mapProps, map) => {
-    // console.log("[MapContainer] > onMapReady");
-    this.setState({ map: map, mapProps: mapProps }, () => { this.getGeoLocation(); });
-  }
+	onMapReady = (mapProps, map) => {
+		// console.log("[MapContainer] > onMapReady");
+		this.setState({ map: map, mapProps: mapProps }, () => { this.getGeoLocation(); });
+	}
 
-  onMapIdle = (mapProps, map) => {
-    console.log("​[MapContainer] > onMapIdle")
+	onMapIdle = (mapProps, map) => {
+		// console.log("​[MapContainer] > onMapIdle")
 
-    let mapCenter = {};
-    let mapBounds = {};
-    let currRadius = this.props.radius; // from store ("global state")
+		let mapCenter = {};
+		let mapBounds = {};
+		let currRadius = this.props.radius; // from store ("global state")
 
-    const mapParams = {};
+		const mapParams = {};
 
-    // this.getGeoLocation(); @@@@ MOVED TO componentDidMount @@@ NEED TO DECIDE IF IT KEEPS TRACKING USER's LOCATION OR ONLY ONCE
+		// this.getGeoLocation(); @@@@ MOVED TO componentDidMount @@@ NEED TO DECIDE IF IT KEEPS TRACKING USER's LOCATION OR ONLY ONCE
 
-    if (map.getBounds() !== undefined && map.getCenter() !== undefined) {
+		if (map.getBounds() !== undefined && map.getCenter() !== undefined) {
 
-      mapBounds = map.getBounds();
+			mapBounds = map.getBounds();
 
-      // need to be tested and validate/disable radius slider
-      mapCenter = this.state.currentLatLng ? this.state.currentLatLng : map.getCenter().toJSON();
+			// need to be tested and validate/disable radius slider
+			mapCenter = this.state.currentLatLng ? this.state.currentLatLng : map.getCenter().toJSON();
 
-      mapParams.neX = mapBounds.getNorthEast().toJSON().lat;
-      mapParams.neY = mapBounds.getNorthEast().toJSON().lng;
-      mapParams.swX = mapBounds.getSouthWest().toJSON().lat;
-      mapParams.swY = mapBounds.getSouthWest().toJSON().lng;
-      mapParams.rad = currRadius;
-      mapParams.centerX = mapCenter.lat;
-      mapParams.centerY = mapCenter.lng;
-      // console.log(mapParams);
+			mapParams.neX = mapBounds.getNorthEast().toJSON().lat;
+			mapParams.neY = mapBounds.getNorthEast().toJSON().lng;
+			mapParams.swX = mapBounds.getSouthWest().toJSON().lat;
+			mapParams.swY = mapBounds.getSouthWest().toJSON().lng;
+			mapParams.rad = currRadius;
+			mapParams.centerX = mapCenter.lat;
+			mapParams.centerY = mapCenter.lng;
+			// console.log(mapParams);
 
-      this.getMarkers(mapParams);
-    }
+			this.getMarkers(mapParams);
+		}
 
-  }
+	}
 
-  getMarkers = mapParams => {
-    // console.log("​[MapContainer] -> mapParams", mapParams)
-    // console.log('[MapContainer] > getMarkers > this.props.filtersArray:', this.props.filtersArray);
-    // console.log('[MapContainer] > getMarkers');
+	getMarkers = mapParams => {
+		// console.log("​[MapContainer] -> mapParams", mapParams)
+		// console.log('[MapContainer] > getMarkers > this.props.filtersArray:', this.props.filtersArray);
+		// console.log('[MapContainer] > getMarkers');
 
-    axios('http://localhost/webapplication1/api/numOfPhotos/', { params: mapParams })
-      .then(response => {
-        console.table(response.data);
-        console.log(response.data);
-        const markers = response.data.filter(marker => this.props.filtersArray[marker.filters])
-          .map((marker) => {
-            return <Marker
-              key={marker.id}
-              markerId={marker.id}
-              position={{ lat: marker.lat, lng: marker.lng }}
-              filter={marker.filters}
-              title={"Filter: " + marker.filters}
-              icon={{ url: 'http://localhost/webapplication1/api/image/thumbnail_' + marker.id }}
-              onClick={this.onMarkerClick}
-            />
-          });
-        this.setState({ markersArray: markers });
-      })
-      .catch(error => console.error(error));
-  }
+		axios('http://localhost/webapplication1/api/numOfPhotos/', { params: mapParams })
+			.then(response => {
+				// console.table(response.data);
+				// console.log(response.data);
+				const markers = response.data.filter(marker => this.props.filtersArray[marker.filters])
+					.map((marker) => {
+						return <Marker
+							key={marker.id}
+							markerId={marker.id}
+							position={{ lat: marker.lat, lng: marker.lng }}
+							filter={marker.filters}
+							title={"Filter: " + marker.filters}
+							icon={{ url: 'http://localhost/webapplication1/api/image/thumbnail_' + marker.id }}
+							onClick={this.onMarkerClick}
+						/>
+					});
+				this.setState({ markersArray: markers });
+			})
+			.catch(error => console.error(error));
+	}
 
-  onMarkerClick = (props, marker, e) => {
-    this.setState({
-      activeMarker: marker,
-      showingModalWindow: true
-    });
-  }
+	onMarkerClick = (props, marker, e) => {
+		this.setState({
+			activeMarker: marker,
+			showingModalWindow: true
+		});
+	}
 
-  toggleModal = () => {
-    this.setState({
-      showingModalWindow: !this.state.showingModalWindow,
-      activeMarker: !this.state.showingModalWindow ? this.state.activeMarker : {}
-    });
-  }
+	toggleModal = () => {
+		this.setState({
+			showingModalWindow: !this.state.showingModalWindow,
+			activeMarker: !this.state.showingModalWindow ? this.state.activeMarker : {}
+		});
+	}
 
-  componentDidMount() {
-    // console.log('[MapContainer] > componentDidMount');
-  }
+	onInfoWindowClose = () => {
+		this.setState({ showingInfoWindow: false });
+	}
 
-  componentWillUnmount() {
-    // console.log('[MapContainer] > componentWillUnmount');
-    navigator.geolocation.clearWatch(this.state.watchID);
-  }
+	componentDidMount() {
+		// console.log('[MapContainer] > componentDidMount');
+	}
 
-  componentDidUpdate(prevProps) { // @@@@@@@@@@@@@@@@@@@@ NEED TO DO IT REDUX-STYLE, WHENEVER STORE CHANGE, TRIGGER IDLE
+	componentWillUnmount() {
+		// console.log('[MapContainer] > componentWillUnmount');
+		navigator.geolocation.clearWatch(this.state.watchID);
+	}
 
-    if (prevProps.filtersArray !== this.props.filtersArray) {
-      // console.log('[MapContainer] -> componentDidUpdate -> prevProps:', prevProps.filtersArray, '&& this.props.filtersArray:', this.props.filtersArray);
-      this.onMapIdle(this.state.mapProps, this.state.map);
-    }
+	componentDidUpdate(prevProps) { // @@@@@@@@@@@@@@@@@@@@ NEED TO DO IT REDUX-STYLE, WHENEVER STORE CHANGE, TRIGGER IDLE
+		if (prevProps.filtersArray !== this.props.filtersArray || prevProps.radius !== this.props.radius) {
+			this.onMapIdle(this.state.mapProps, this.state.map);
+		}
+	}
 
-    if (prevProps.radius !== this.props.radius) {
-      // console.log('[MapContainer] -> componentDidUpdate -> prevProps:', prevProps.radius, '!= this.props.radius:', this.props.radius);
-      // console.log('[MapContainer] -> componentDidUpdate -> this.state.markersArray:', this.state.markersArray);
-      this.onMapIdle(this.state.mapProps, this.state.map);
-    }
+	// triggerIdle = () => { this.onMapIdle(this.state.mapProps, this.state.map); }
 
-  }
+	// queryStringToJSON = () => {
+	// 	const pairs = this.props.location.search.slice(1).split('?');
 
-  triggerIdle = () => { this.onMapIdle(this.state.mapProps, this.state.map); }
+	// 	let result = {};
+	// 	pairs.forEach((pair) => {
+	// 		pair = pair.split('=');
+	// 		result[pair[0]] = Number(pair[1]);
+	// 	});
+	// 	console.log('this.state.map', this.state.map);
+	// 	return result;
+	// }
 
-  render() {
-    // console.log('[MapContainer] render');
+	render() {
+		// console.log('[MapContainer] render');
 
-    return (
+		// const center = this.props.location.search ? this.queryStringToJSON() : { lat: 32.109333, lng: 34.855499 };
+		// const zoom = this.props.location.search ? 10 : 2;
+		// const bounds = this.props.location.search ? new this.props.google.maps.LatLngBounds().extend(center) : "";
+		// console.log('center: ', center);
 
-      <div>
+		return (
 
-        <Map
-          google={this.props.google}
-          style={mapStyle}
-          containerStyle={mapContainerStyle}
-          initialCenter={{ lat: 32.109333, lng: 34.855499 }} // Tel Aviv, Israel
-          zoom={2}
-          onReady={this.onMapReady}
-          onIdle={this.onMapIdle}>
+			<div>
 
-          {this.state.markersArray}
+				<Map
+					google={this.props.google}
+					style={mapStyle}
+					containerStyle={mapContainerStyle}
+					initialCenter={{ lat: 32.109333, lng: 34.855499 }}
+					zoom={2}
+					// bounds={bounds}
+					onClick={() => { this.onInfoWindowClose(); }}
+					onReady={this.onMapReady}
+					onIdle={this.onMapIdle}>
 
-          <InfoWindow
-            visible={this.state.showingInfoWindow}
-            position={this.state.currentLatLng}>
-            <h5>{"You are here!"}</h5>
-          </InfoWindow>
+					{this.state.markersArray}
 
-        </Map>
+					<InfoWindow
+						visible={this.state.showingInfoWindow}
+						position={this.state.currentLatLng}
+						onClose={this.onInfoWindowClose}>
+						<h5>{"You are here!"}</h5>
+					</InfoWindow>
 
-        <FullsizeMarker
-          isOpen={this.state.showingModalWindow}
-          toggleModal={this.toggleModal}
-          activeMarker={this.state.activeMarker} />
+				</Map>
 
-      </div>
-    );
+				<FullsizeMarker
+					isOpen={this.state.showingModalWindow}
+					toggleModal={this.toggleModal}
+					activeMarker={this.state.activeMarker} />
 
-  }
+			</div>
+		);
+
+	}
 
 }
 
 // asks for props from store
 const mapStateToProps = state => {
-  // console.log("​[MapContainer] > mapStateToProps", state);
-  return state;
+	// console.log("​[MapContainer] > mapStateToProps", state);
+	return state;
 }
 
 export default connect(mapStateToProps)(GoogleApiWrapper({ apiKey: "AIzaSyBimObDCzrKYyVo9t9K1vZEqT7BmIvOCis" })(MapContainer))
 
+MapContainer.propTypes = {
+	radius: PropTypes.number,
+	filtersArray: PropTypes.object
+}
+
 Map.propTypes = {
-  google: PropTypes.object,
-  zoom: PropTypes.number,
-  initialCenter: PropTypes.object,
-  onClick: PropTypes.func,
-  onReady: PropTypes.func,
-  onIdle: PropTypes.func
+	google: PropTypes.object,
+	zoom: PropTypes.number,
+	initialCenter: PropTypes.object,
+	onClick: PropTypes.func,
+	onReady: PropTypes.func,
+	onIdle: PropTypes.func,
+	style: PropTypes.object,
+    containerStyle: PropTypes.object
+}
+
+InfoWindow.propTypes = {
+	visible: PropTypes.bool,
+	position: PropTypes.object,
+	onClose: PropTypes.func
+}
+
+FullsizeMarker.propTypes = {
+	isOpen: PropTypes.bool,
+	toggleModal: PropTypes.func,
+	activeMarker: PropTypes.object
 }

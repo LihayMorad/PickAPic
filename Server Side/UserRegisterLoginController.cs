@@ -71,30 +71,7 @@ namespace WebApplication1.Controllers
         //public HttpResponseMessage CheckAccessToken([FromBody]User accessToken)
         public HttpResponseMessage CheckAccessToken([FromBody] MySession accessToken)
         {
-            HttpResponseMessage response = new HttpResponseMessage();
-
-            if (accessToken.AccessToken != string.Empty)
-            {
-                string userName = searchUserByAccessToken(accessToken.AccessToken);
-                if (userName != null)
-                {
-                    response.Content = new StringContent(userName);
-                    return response;
-                }
-            }
-            // else a bad request will be returned
-            response.StatusCode = HttpStatusCode.BadRequest;
-            response.Content = new StringContent("Incorrect username/password !");
-
-            return response;
-        }
-
-        private string searchUserByAccessToken(string accessToken)
-        {
-            for (int i = 0; i < HttpContext.Current.Application.Count; i++)
-                if ((string)HttpContext.Current.Application[i] == accessToken)
-                    return (string)HttpContext.Current.Application.GetKey(i);
-            return null;
+            return AccessToken.CheckAccessToken(accessToken);
         }
 
         //// Check if username and password are correct for login
@@ -120,14 +97,70 @@ namespace WebApplication1.Controllers
             ////
 
             Reader = Cmd.ExecuteReader();
+            //Cmd.ExecuteNonQuery();
 
             if (Reader.HasRows)
                 userFound = true;
-
+            Reader.Close();  
             Conn.Close();
 
             return userFound;
         }
+
+        //private CookieHeaderValue createCookie(User user)
+        //{
+        //    var vals = new NameValueCollection();
+
+        //    vals["sessionid"] = Guid.NewGuid().ToString(); // maybe encrypt with password
+        //    vals["username"] = user.Username;
+
+        //    var cookie = new CookieHeaderValue("session", vals);
+
+        //    cookie.Path = "/";
+        //    cookie.Expires = DateTimeOffset.Now.AddHours(5);
+        //    cookie.Domain = Request.RequestUri.Host;
+
+        //    Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
+        //    Conn.Open();
+
+        //    QueryStr = "UPDATE userlogin SET SessionID = '" + vals["sessionid"] + "' WHERE (Username = '" + user.Username + "')";
+
+        //    Cmd = new MySqlCommand(QueryStr, Conn);
+
+        //    Reader = Cmd.ExecuteReader();
+
+        //    Conn.Close();
+        //    return cookie;
+        //}
+
+        //// Checks if user has cookie or not
+        //[HttpGet]
+        //[Route("hasCookie")]
+        //public HttpResponseMessage hasCookie()
+        //{
+        //    var userCookie = Request.Headers.GetCookies("session").FirstOrDefault();
+        //    var response = new HttpResponseMessage();
+
+        //    if (userCookie != null)
+        //    {
+        //        CookieState vals = userCookie["session"];
+
+        //        string[] userSessionArray = new string[3];
+        //        var userSessionID = vals["sessionid"];
+        //        var userSessionUsername = vals["username"];
+        //        userSessionArray[0] = userSessionID;
+        //        userSessionArray[1] = userSessionUsername;
+        //        userSessionArray[2] = "User has cookie c#";
+
+        //        response = Request.CreateResponse(HttpStatusCode.OK, userSessionArray);
+
+        //        response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+        //        response.Headers.Add("Access-Control-Allow-Credentials", "true");
+
+        //        return response;
+        //    }
+        //    return response;
+        //}
 
         //// Update mysql database with new user if successful
         private bool registerUser(string username, string password)
@@ -149,27 +182,14 @@ namespace WebApplication1.Controllers
 
             Cmd.Parameters.AddWithValue("username", username);
             Cmd.Parameters.AddWithValue("pass", password);
-            Cmd.Parameters.AddWithValue("permission", "user"); /////////////////////////////
-            Cmd.Parameters.AddWithValue("rating", "5.0"); //////////////////////////////////
+            Cmd.Parameters.AddWithValue("permission", "User");
+            Cmd.Parameters.AddWithValue("rating", 5);
             ////
 
             Cmd.ExecuteReader();
 
             Conn.Close();
 
-            ////old query
-            //Conn.Open();
-
-            //QueryStr = "INSERT INTO gis.userdetails (Username, Permission, Rating)" +
-            //        "VALUE ('" + username + "','User','5')";
-
-            //Cmd = new MySqlCommand(QueryStr, Conn);
-
-            //Cmd.ExecuteReader();
-
-            //Conn.Close();
-            ////
-            
             return true;
         }
 

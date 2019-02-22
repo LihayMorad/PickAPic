@@ -54,47 +54,62 @@ namespace GISApplication
             var yCord = await result.Contents[3].ReadAsStringAsync();
             var filter = await result.Contents[4].ReadAsStringAsync();
             var description = await result.Contents[5].ReadAsStringAsync();
+            var accessToken = await result.Contents[6].ReadAsStringAsync();
 
-            //if (checkIfLoggedIn())
-            //{
-            var httpRequest = HttpContext.Current.Request;
-            //var response = new HttpResponseMessage();
+            MySession token = new MySession(accessToken);
 
-            foreach (string file in httpRequest.Files)
+            if (AccessToken.CheckAccessToken(token).StatusCode != HttpStatusCode.BadRequest)
             {
-                //// get file extension
-                var postedFile = httpRequest.Files[file]; // Get http request for POST
-                string fileString = postedFile.FileName.ToString(); // get photo name to extract extension
-                string fileExts = Path.GetExtension(fileString); // extract file extension (png, jpg, ect...)
 
-                string ID = generateID(); // generate random ID for each photo
+                string username = AccessToken.searchUserByAccessToken(token.AccessToken);
 
-                response.StatusCode = HttpStatusCode.OK;
+                var httpRequest = HttpContext.Current.Request;
+                //var response = new HttpResponseMessage();
 
-                //// save file with new ID
-                string localfilepath = HttpContext.Current.Server.MapPath("~//photos//" + ID + fileExts);
-                postedFile.SaveAs(localfilepath);
+                foreach (string file in httpRequest.Files)
+                {
+                    //// get file extension
+                    var postedFile = httpRequest.Files[file]; // Get http request for POST
+                    string fileString = postedFile.FileName.ToString(); // get photo name to extract extension
+                    string fileExts = Path.GetExtension(fileString); // extract file extension (png, jpg, ect...)
 
-                //// save thumbnail with new ID
-                string thumbnailFilepath = HttpContext.Current.Server.MapPath("~//photos//" + "thumbnail_" + ID + fileExts);
-                ImageResizer.ImageJob i = new ImageResizer.ImageJob(postedFile, thumbnailFilepath, new ImageResizer.Instructions("width=100;height=100;format=jpg;mode=max;autorotate=true"));
-                i.Build();
+                    string ID = generateID(); // generate random ID for each photo
 
-                savePhotoInServer(ID, fileExts, "1", xCord, yCord, filter, description);
+                    response.StatusCode = HttpStatusCode.OK;
+
+                    //// save file with new ID
+                    string localfilepath = HttpContext.Current.Server.MapPath("~//photos//" + ID + fileExts);
+                    postedFile.SaveAs(localfilepath);
+
+                    //// save thumbnail with new ID
+                    string thumbnailFilepath = HttpContext.Current.Server.MapPath("~//photos//" + "thumbnail_" + ID + fileExts);
+
+                    ImageResizer.ImageJob i = new ImageResizer.ImageJob(postedFile, thumbnailFilepath, new ImageResizer.Instructions("width=100;height=100;format=jpg;mode=max;autorotate=true"));
+                    i.Build();
+
+                    if (isExif != "true")
+                    {
+                        imageYellowBorder(ID);
+                    }
+
+                    int manualGPS = isExif.ToString() == "true" ? 1 : 0;
+                    savePhotoInServer(ID, username, fileExts, manualGPS, Double.Parse(xCord), Double.Parse(yCord), filter, description);
+                }
+
+                return response;
             }
 
-            return response;
-            //}
-            //response.StatusCode = HttpStatusCode.BadRequest;
-            //response.Content = new StringContent("Please login to upload photos");
+            //else
+            response.StatusCode = HttpStatusCode.BadRequest;
+            response.Content = new StringContent("Please login to upload photos");
 
-            //return response;
+            return response;
         }
 
         //// Saves photo details in server : lat, lng, path, popularity, gps, filters
-        private void savePhotoInServer(string ID, string extension, string manualGps, string xCord, string yCord, string selectedFilter, string imgDesc)
+        private void savePhotoInServer(string ID, string username, string extension, int manualGps, double xCord, double yCord, string selectedFilter, string imgDesc)
         {
-            m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password-PASS;sslMode=none;");
+            m_Conn = new MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
 
             m_Conn.Open(); // open connection 
 
@@ -108,7 +123,7 @@ namespace GISApplication
             m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             m_Cmd.Parameters.AddWithValue("id", ID);
-            m_Cmd.Parameters.AddWithValue("username", "hardCodedUsername");/////////////////////
+            m_Cmd.Parameters.AddWithValue("username", username);
             m_Cmd.Parameters.AddWithValue("lat", xCord);
             m_Cmd.Parameters.AddWithValue("lng", yCord);
             m_Cmd.Parameters.AddWithValue("description", imgDesc);
@@ -122,16 +137,16 @@ namespace GISApplication
 
             m_Cmd.ExecuteNonQuery();
 
-          //  m_Conn.Close();
+            //  m_Conn.Close();
 
-           // m_Conn.Open(); // open connection 
+            // m_Conn.Open(); // open connection 
 
-           // m_QueryStr = "INSERT INTO gis.photodetails(ID, Description, Relevance, UploadDate, Path) VALUES (@ID, @Description, @Relevance, @UploadDate, @Path)";
-          //  MySqlCommand m_Cmd2;
-           // m_Cmd2 = new MySqlCommand(m_QueryStr, m_Conn);
+            // m_QueryStr = "INSERT INTO gis.photodetails(ID, Description, Relevance, UploadDate, Path) VALUES (@ID, @Description, @Relevance, @UploadDate, @Path)";
+            //  MySqlCommand m_Cmd2;
+            // m_Cmd2 = new MySqlCommand(m_QueryStr, m_Conn);
 
             //ImgId auto increments, no need to give it values
-           // m_Cmd2.Parameters.AddWithValue("@ID", ID);
+            // m_Cmd2.Parameters.AddWithValue("@ID", ID);
             //      m_Cmd2.Parameters.AddWithValue("@Username", vals["username"]);
             //m_Cmd2.Parameters.AddWithValue("@Description", imgDesc);
             //m_Cmd2.Parameters.AddWithValue("@Relevance", "0");
@@ -169,7 +184,7 @@ namespace GISApplication
             CookieState vals = userCookie["session"];
             string ID = HttpContext.Current.Application[vals["username"]].ToString();
 
-            m_Conn = new MySql.Data.MySqlClient.MySqlConnection("server=localhost; user id=root;database=gis;password-PASS;sslMode=none;");
+            m_Conn = new MySql.Data.MySqlClient.MySqlConnection("server=localhost; user id=root;database=gis;password=PASS;sslMode=none;");
 
             m_Conn.Open(); // open connection 
 
@@ -215,6 +230,7 @@ namespace GISApplication
             }
 
             bitmap.Save(HttpContext.Current.Server.MapPath("~//photos//thumbnail_" + ID + ".jpg"));
+            bitmap.Dispose();
 
             path = HttpContext.Current.Server.MapPath("~//photos//thumbnail_" + ID + "NEW.jpg");
 
@@ -231,47 +247,5 @@ namespace GISApplication
             }
         }
 
-        private void saveImage(Bitmap file, string filename)
-        {
-            try
-            {
-                if (Directory.Exists(HttpContext.Current.Server.MapPath("~//photos//thumbnail_") + filename))
-                {
-                    file.Dispose();
-                }
-                else
-                {
-                    Directory.CreateDirectory("filepath" + filename);
-                    file.Save("filepath" + filename, ImageFormat.Jpeg);
-                }
-            }
-            finally
-            {
-                file.Dispose();
-            }
-        }
-
-        // manualLocation upload method 
-        //[HttpPost]
-        //[Route("location")]
-        //public IHttpActionResult manualLocation([FromBody] Location loc)
-        //{
-        //    var userCookie = Request.Headers.GetCookies("session").FirstOrDefault();
-        //    // change to appliction
-        //    CookieState vals = userCookie["session"];
-        //    string Id = HttpContext.Current.Application[vals["username"]].ToString();
-
-        //    double lat = loc.lat;
-        //    double lng = loc.lng;
-        //    try
-        //    {
-        //        updateGPS(Id,lat,lng,1);
-        //        return Ok();
-        //    }
-        //    catch
-        //    {
-        //        return Content(HttpStatusCode.BadRequest, "Unable to save manual location in database");
-        //    }
-        //}
     }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
 import avatar from '../../../assets/loginRegister.png';
@@ -27,7 +28,7 @@ class RegisterForm extends Component {
                 // console.log('response', response);
                 localStorage.setItem('access-token', response.data);
                 this.props.handleLoggedUser(username);
-                alert("Hi, " + username + ", you have been successfully registered! You're logged in.");
+                alert("Hi " + username + ", you have been successfully registered! You're logged in.");
             })
             .catch((error) => {
                 // console.error('error', error);
@@ -63,3 +64,12 @@ class RegisterForm extends Component {
 }
 
 export default RegisterForm;
+
+RegisterForm.propTypes = {
+    handleFormChange: PropTypes.func,
+    handleLoggedUser: PropTypes.func
+}
+
+Form.propTypes = {
+    onSubmitHander: PropTypes.func
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -42,7 +42,6 @@ class LoginRegister extends Component {
             accessToken.append('accessToken', localStorageAccessToken);
 
             // for (const param of accessToken) console.log('[LoginRegister]', param);
-
             axios({
                 method: 'POST',
                 url: 'http://localhost/webapplication1/CheckAccessToken',
@@ -51,7 +50,7 @@ class LoginRegister extends Component {
             })
                 .then(response => {
                     // console.log("[CheckAccessToken] response.data - username: ", response.data);
-                    console.log(response);
+                    // console.log(response);
                     this.toggleUser(response.data);
                 })
                 .catch(error => {
@@ -80,7 +79,6 @@ class LoginRegister extends Component {
                     isOpen={this.state.modalIsOpen}
                     toggleModal={this.toggleModal}
                     toggleUser={this.toggleUser} />
-
             </div>
         );
 
@@ -88,3 +86,13 @@ class LoginRegister extends Component {
 }
 
 export default LoginRegister;
+
+LoginRegisterFormContainer.propTypes = {
+    isOpen: PropTypes.bool,
+    toggleModal: PropTypes.func,
+    toggleUser: PropTypes.func
+}
+
+Button.propTypes = {
+    onClick: PropTypes.func
+}
