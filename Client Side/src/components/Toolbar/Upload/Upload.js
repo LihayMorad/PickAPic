@@ -37,7 +37,7 @@ class Upload extends Component {
                     data: accessToken
                 })
                     .then(response => {
-                        console.log("[CheckAccessToken] response.data - username: ", response.data);
+                        // console.log("[CheckAccessToken] response.data - username: ", response.data);
 
                         let file = event.target.files[0];
 
@@ -57,17 +57,16 @@ class Upload extends Component {
                                 file: event.target.files[0]
                             });
                         }
-                        else
+                        else // file.type != JPG/JPEG
                             alert("Only 'JPG/JPEG' files are allowed to upload!");
 
                     })
                     .catch(error => {
-                        alert("[catch] You have to be logged in to upload photos");
-                        // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
+                        alert("You have to be logged in to upload photos");
                     });
             }
-            else {
-                alert("[no token] You have to be logged in to upload photos");
+            else { // no local storage token
+                alert("You have to be logged in to upload photos");
             }
         }
     }

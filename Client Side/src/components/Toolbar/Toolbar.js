@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Logo from './Logo/Logo';
 import SearchInput from './SearchInput/SearchInput';
+import UserPhotos from './UserPhotos/UserPhotos';
 import Upload from './Upload/Upload';
 import Filters from './Filters/Filters';
 import RadiusSlider from './RadiusSlider/RadiusSlider';
@@ -54,6 +55,12 @@ class Toolbar extends Component {
                             {/* Search by radius */}
                             <NavItem className="navBtn">
                                 <RadiusSlider />
+                            </NavItem>
+
+
+                            {/* Show only logged in user photos */}
+                            <NavItem className="navBtn">
+                                <UserPhotos />
                             </NavItem>
 
 

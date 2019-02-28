@@ -15,7 +15,7 @@ const mapStyle = {
 
 const mapContainerStyle = {
     width: '100%',
-    height: '45%'
+    height: '40%'
 }
 
 class pictureDetailsForm extends Component {
@@ -31,7 +31,7 @@ class pictureDetailsForm extends Component {
     handleFilterChange = event => { this.setState({ filter: event.target.value }); }
 
     handleFileUpload = () => {
-        console.log('pictureDetailsForm -> fileUpload ->  this.props.location.state', this.props.location.state);
+        // console.log('pictureDetailsForm -> fileUpload ->  this.props.location.state', this.props.location.state);
 
         const url = 'http://localhost/webapplication1/Upload';
         const formData = new FormData();
@@ -63,9 +63,9 @@ class pictureDetailsForm extends Component {
 
         const config = { headers: { 'content-type': 'multipart/form-data' } };
 
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
+        // for (let pair of formData.entries()) {
+        //     console.log(pair[0] + ': ' + pair[1]);
+        // }
 
         post(url, formData, config)
             .then(res => {
@@ -81,8 +81,10 @@ class pictureDetailsForm extends Component {
             lat: clickEvent.latLng.lat(),
             lng: clickEvent.latLng.lng()
         }
-        console.log('pictureDetailsForm -> onMapClicked -> photoLocation', photoLocation);
-        this.setState({ photoLocation }, () => { console.log(this.state); });
+        // console.log('pictureDetailsForm -> onMapClicked -> photoLocation', photoLocation);
+        this.setState({ photoLocation }, () => {
+            // console.log(this.state); 
+        });
     }
 
     render() {
@@ -111,27 +113,28 @@ class pictureDetailsForm extends Component {
             </Map>;
         }
         if (this.state.redirect) {
-            console.log("this.state.redirect");
+            // console.log("this.state.redirect");
             redirectToMap = <Redirect to={{ // was: Redirect *push* to...
                 pathname: '/',
-                // search: "?lat=" + this.state.photoLocation.lat + "?lng=" + this.state.photoLocation.lng,
                 state: { photoLocation: this.state.photoLocation }
             }} />;
         }
 
-        // console.log('pictureDetailsForm -> render -> googleMap:', googleMap);
-
         return (
-            <div className="detailsPage" >
+            <div className="detailsPage">
                 <h1>Description Page</h1>
 
                 <div className="detailsDiv">
+
+                    {this.props.location.state.image && <img className={"imgPreview"} alt={"preview"}
+                        src={URL.createObjectURL(this.props.location.state.image)}></img>}
+
                     <label htmlFor="photoDescription" className="detailsLabel">Enter photo description:</label>
-                    <input type="text" id="photoDescription" name="Description" className="detailsInput"
+                    <input type="text" id="photoDescription" name="Description" className="descriptionInput"
                         placeholder="Enter photo description" onChange={this.handleDescriptionChange} />
 
                     <label htmlFor="filtersOptions" className="detailsLabel">Choose photo filter:</label>
-                    <select id="filtersOptions" name="filtersOptions" className="detailsInput"
+                    <select id="filtersOptions" name="filtersOptions" className="filtersInput"
                         defaultValue="Other" onChange={this.handleFilterChange}>
                         <option value="Panorama">Panorama</option>
                         <option value="Sunrise">Sunrise</option>
@@ -158,14 +161,14 @@ class pictureDetailsForm extends Component {
 export default (GoogleApiWrapper({ apiKey: "AIzaSyBimObDCzrKYyVo9t9K1vZEqT7BmIvOCis" })(pictureDetailsForm));
 
 pictureDetailsForm.propTypes = {
-    
+
 }
 
 Map.propTypes = {
     google: PropTypes.object,
-	initialCenter: PropTypes.object,
-	zoom: PropTypes.number,
-	onReady: PropTypes.func,
+    initialCenter: PropTypes.object,
+    zoom: PropTypes.number,
+    onReady: PropTypes.func,
     onClick: PropTypes.func,
     style: PropTypes.object,
     containerStyle: PropTypes.object

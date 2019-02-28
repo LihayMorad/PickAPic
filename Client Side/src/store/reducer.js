@@ -11,7 +11,9 @@ const initialState = {
         'Grass': true,
         'Flowers': true,
         'Other': true,
-    }
+    },
+    loggedInUser: "",
+    showOnlyCurrentUserPhotos: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -20,10 +22,8 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
         case actionTypes.CHANGE_RADIUS:
-            // console.log("[reducer] -> action.rad:", action.rad);
             return { ...state, radius: action.rad };
         case actionTypes.CHANGE_FILTERS:
-            // console.log("[reducer] -> action.filterName, action.isChecked:", action.filterName, action.isChecked);
             const updatedFiltersArray = { ...state.filtersArray };
             if (action.filterName === "AllFilters") {
                 for (const filter in state.filtersArray) { updatedFiltersArray[filter] = action.isChecked; }
@@ -38,6 +38,10 @@ const reducer = (state = initialState, action) => {
             }
             const updatedState = { ...state, filtersArray: updatedFiltersArray };
             return updatedState;
+        case actionTypes.CHANGE_LOGGED_IN_USER:
+            return { ...state, loggedInUser: action.username };
+        case actionTypes.CHANGE_PHOTOS_TO_SHOW:
+            return { ...state, showOnlyCurrentUserPhotos: action.isChecked };
         default:
             return state;
     }

@@ -56,7 +56,7 @@ class MapContainer extends Component {
 	}
 
 	onMapIdle = (mapProps, map) => {
-		// console.log("​[MapContainer] > onMapIdle")
+		// console.log("​[MapContainer] > onMapIdle");
 
 		let mapCenter = {};
 		let mapBounds = {};
@@ -96,7 +96,13 @@ class MapContainer extends Component {
 			.then(response => {
 				// console.table(response.data);
 				// console.log(response.data);
-				const markers = response.data.filter(marker => this.props.filtersArray[marker.filters])
+				let userPhotosToShow = this.props.showOnlyCurrentUserPhotos ? this.props.loggedInUser : null;
+
+				const markers = response.data.filter(marker => {
+					return this.props.showOnlyCurrentUserPhotos && userPhotosToShow ?
+						(this.props.filtersArray[marker.filters] && marker.username === userPhotosToShow)
+						: this.props.filtersArray[marker.filters]
+				})
 					.map((marker) => {
 						return <Marker
 							key={marker.id}
@@ -136,37 +142,19 @@ class MapContainer extends Component {
 	}
 
 	componentWillUnmount() {
-		// console.log('[MapContainer] > componentWillUnmount');
 		navigator.geolocation.clearWatch(this.state.watchID);
 	}
 
-	componentDidUpdate(prevProps) { // @@@@@@@@@@@@@@@@@@@@ NEED TO DO IT REDUX-STYLE, WHENEVER STORE CHANGE, TRIGGER IDLE
-		if (prevProps.filtersArray !== this.props.filtersArray || prevProps.radius !== this.props.radius) {
+	componentDidUpdate(prevProps, prevState) { // @@@@@@@@@@@@@@@@@@@@ NEED TO DO IT REDUX-STYLE, WHENEVER STORE CHANGE, TRIGGER IDLE
+		if (prevProps.filtersArray !== this.props.filtersArray
+			|| prevProps.radius !== this.props.radius
+			|| prevProps.showOnlyCurrentUserPhotos !== this.props.showOnlyCurrentUserPhotos) {
 			this.onMapIdle(this.state.mapProps, this.state.map);
 		}
 	}
 
-	// triggerIdle = () => { this.onMapIdle(this.state.mapProps, this.state.map); }
-
-	// queryStringToJSON = () => {
-	// 	const pairs = this.props.location.search.slice(1).split('?');
-
-	// 	let result = {};
-	// 	pairs.forEach((pair) => {
-	// 		pair = pair.split('=');
-	// 		result[pair[0]] = Number(pair[1]);
-	// 	});
-	// 	console.log('this.state.map', this.state.map);
-	// 	return result;
-	// }
-
 	render() {
 		// console.log('[MapContainer] render');
-
-		// const center = this.props.location.search ? this.queryStringToJSON() : { lat: 32.109333, lng: 34.855499 };
-		// const zoom = this.props.location.search ? 10 : 2;
-		// const bounds = this.props.location.search ? new this.props.google.maps.LatLngBounds().extend(center) : "";
-		// console.log('center: ', center);
 
 		return (
 
@@ -197,7 +185,8 @@ class MapContainer extends Component {
 				<FullsizeMarker
 					isOpen={this.state.showingModalWindow}
 					toggleModal={this.toggleModal}
-					activeMarker={this.state.activeMarker} />
+					activeMarker={this.state.activeMarker}
+					toggleIdle={() => { this.onMapIdle(this.state.mapProps, this.state.map) }} />
 
 			</div>
 		);
@@ -227,7 +216,7 @@ Map.propTypes = {
 	onReady: PropTypes.func,
 	onIdle: PropTypes.func,
 	style: PropTypes.object,
-    containerStyle: PropTypes.object
+	containerStyle: PropTypes.object
 }
 
 InfoWindow.propTypes = {

@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+
+import { connect } from 'react-redux';
+import * as actionTypes from '../../../store/actions';
+
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +18,7 @@ class LoginRegister extends Component {
     state = {
         modalIsOpen: false,
         isLogged: false,
-        userLoggedIn: "",
+        userLoggedIn: this.props.loggedInUser,
         buttonText: "Login/Register"
     }
 
@@ -27,9 +31,8 @@ class LoginRegister extends Component {
             this.setState({
                 modalIsOpen: false,
                 isLogged: true,
-                userLoggedIn: username,
                 buttonText: " Logged as: " + username
-            })
+            }, () => this.props.onUserLoggedInChange(username));
         }
     }
 
@@ -85,7 +88,17 @@ class LoginRegister extends Component {
     }
 }
 
-export default LoginRegister;
+const mapStateToProps = state => { // console.log("​mapStateToProps");
+    return state;
+}
+
+const mapDispatchToProps = dispatch => { // console.log("mapDispatchToProps");
+    return {
+        onUserLoggedInChange: (username) => dispatch({ type: actionTypes.CHANGE_LOGGED_IN_USER, username: username })
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginRegister);
 
 LoginRegisterFormContainer.propTypes = {
     isOpen: PropTypes.bool,

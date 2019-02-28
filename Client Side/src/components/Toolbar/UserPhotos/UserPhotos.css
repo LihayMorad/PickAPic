@@ -1,0 +1,21 @@
+.userPhotosLabel {
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: transparent;
+    margin-right: 8px;
+    margin-bottom: 0;
+    box-shadow: 0 0 0.5px 0.3px rgb(98, 0, 255);
+    padding: 2px;
+    border: 1px solid rgb(98, 0, 255);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    height: 38px;
+}
+
+.userPhotosLabel:hover {
+    background-color: rgb(98, 0, 255);
+    transition: 0.4s;
+    border-color: white;
+    cursor: pointer;
+}
