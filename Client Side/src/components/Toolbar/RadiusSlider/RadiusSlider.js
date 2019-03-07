@@ -38,7 +38,7 @@ const handle = props => {
 
 const radiusSlider = props => {
     return (
-        <div id="radius" title="Select radius from your location in kilometers (0: show all)">
+        <div id="radius" title="Select radius from your location (if provided) or from map's center in kilometers (0: show all)">
             <Slider id="radiusSliderInput"
                 min={0} max={500} step={10}
                 defaultValue={0}
@@ -53,7 +53,7 @@ const radiusSlider = props => {
 }
 
 // gets state from store
-const mapStateToProps = state => { // console.log("​mapStateToProps");
+const mapStateToProps = state => { // console.log("â€‹mapStateToProps");
     return state;
 }
 

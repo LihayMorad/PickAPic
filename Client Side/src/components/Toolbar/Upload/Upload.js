@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import Exif from 'exif-js';
+import Dropzone from 'react-dropzone';
 
 import './Upload.css';
 
@@ -20,11 +21,10 @@ class Upload extends Component {
     }
 
     //// handler which activates when a picture is uploaded
-    uploadedImageHandler = (event) => {
-        event.persist();
-        // event.preventDefault();
+    handleImageUpload = (file) => {
+        // console.log('event: ', file[0]);
 
-        if (event.target.files[0]) {
+        if (file[0]) {
             const localStorageAccessToken = localStorage.getItem("access-token");
             if (localStorageAccessToken) {
                 const accessToken = new URLSearchParams();
@@ -36,54 +36,44 @@ class Upload extends Component {
                     headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
                     data: accessToken
                 })
-                    .then(response => {
+                    .then(response => { // logged in
                         // console.log("[CheckAccessToken] response.data - username: ", response.data);
 
-                        let file = event.target.files[0];
+                        if (file[0].type === "image/jpeg") { ////exif library that extracts gps data
+                            Exif.getData(file[0], () => {
 
-                        ////exif function that extracts gps
-                        if (file.type === "image/jpeg") {
-                            Exif.getData(file, () => {
-                                const lat = Exif.getTag(file, 'GPSLatitude');
-                                const lng = Exif.getTag(file, 'GPSLongitude');
-
-                                if (lat !== undefined && lng !== undefined)
-                                    this.updateLatLng(lat, lng);
-                                else
-                                    this.setState({ isExif: false });
+                                const lat = Exif.getTag(file[0], 'GPSLatitude');
+                                const lng = Exif.getTag(file[0], 'GPSLongitude');
+                                if (lat !== undefined && lng !== undefined) {
+                                    const latFormatted = this.convertToNum(lat);
+                                    const lngFormatted = this.convertToNum(lng);
+                                    this.setState({
+                                        isExif: true,
+                                        xCord: latFormatted,
+                                        yCord: lngFormatted
+                                    });
+                                } else {
+                                    this.setState({
+                                        isExif: false,
+                                    });
+                                }
                             });
                             this.setState({
                                 uploaded: true,
-                                file: event.target.files[0]
+                                file: file[0]
                             });
-                        }
-                        else // file.type != JPG/JPEG
+                        } else // file.type != JPG/JPEG
                             alert("Only 'JPG/JPEG' files are allowed to upload!");
-
                     })
                     .catch(error => {
                         alert("You have to be logged in to upload photos");
                     });
-            }
-            else { // no local storage token
+            } else { // no local storage token
                 alert("You have to be logged in to upload photos");
             }
+        } else { // no file
+            alert("No file has been chosen, please try again.")
         }
-    }
-
-    componentDidUpdate() {
-        // console.log('[Upload] componentDidUpdate', this.state);
-    }
-
-    ////updating the state with new lat lang values, checking if exif data inn the picture exists and noting that a oicture was uploaded
-    updateLatLng = (Lat, Lng) => {
-        const latFormatted = this.convertToNum(Lat);
-        const lngFormatted = this.convertToNum(Lng);
-        this.setState({
-            xCord: latFormatted,
-            yCord: lngFormatted,
-            isExif: true
-        });
     }
 
     ////function that converts the lat long arrays into single double values
@@ -95,22 +85,36 @@ class Upload extends Component {
     render() {
         return (
             <div>
-                <label className={"btn, btnDanger"} htmlFor="my-file-selector"
-                    id="uploadButton" title="Upload a picture">
-                    <Input id="my-file-selector" type="file" accept="image/jpeg"
-                        onChange={this.uploadedImageHandler} />
-                    <FontAwesomeIcon icon={faCloudUploadAlt} /> Upload
+                <Dropzone
+                    multiple={false}
+                    onDrop={this.handleImageUpload}
+                    accept="image/*">
+                    {({ getRootProps, getInputProps }) => (
+                        <label
+                            {...getRootProps()} className={"btn, btnDanger"} htmlFor="my-file-selector"
+                            id="uploadButton" title="Upload a picture">
+
+                            <Input {...getInputProps()} id="my-file-selector" type="file" accept="image/jpeg"
+                                onChange={(event) => {
+                                    // event.persist();
+                                    this.handleImageUpload(event.target.files);
+                                }} ></Input>
+                            <FontAwesomeIcon icon={faCloudUploadAlt} /> Upload
                 </label>
-                {this.state.uploaded ? <Redirect to={{ // was Redirect *push* to...
-                    pathname: '/details',
-                    state: {
-                        isexif: this.state.isExif,
-                        xcord: this.state.xCord,
-                        ycord: this.state.yCord,
-                        image: this.state.file
-                    }
-                }} /> : null}
-            </div>
+                    )}
+                </Dropzone>
+                {
+                    this.state.uploaded ? <Redirect to={{ // was Redirect *push* to...
+                        pathname: '/details',
+                        state: {
+                            isexif: this.state.isExif,
+                            xcord: this.state.xCord,
+                            ycord: this.state.yCord,
+                            image: this.state.file
+                        }
+                    }} /> : null
+                }
+            </div >
         );
     }
 }

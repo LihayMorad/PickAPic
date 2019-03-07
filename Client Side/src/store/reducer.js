@@ -36,8 +36,7 @@ const reducer = (state = initialState, action) => {
                 }
                 updatedFiltersArray["AllFilters"] = checked === 7 ? true : false;
             }
-            const updatedState = { ...state, filtersArray: updatedFiltersArray };
-            return updatedState;
+            return { ...state, filtersArray: updatedFiltersArray };
         case actionTypes.CHANGE_LOGGED_IN_USER:
             return { ...state, loggedInUser: action.username };
         case actionTypes.CHANGE_PHOTOS_TO_SHOW:

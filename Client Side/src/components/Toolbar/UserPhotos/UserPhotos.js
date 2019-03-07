@@ -21,11 +21,11 @@ class UserPhotos extends Component {
     render() {
 
         return (
-            <div title="Show only photos uploaded by me">
+            this.props.loggedInUser && <div title="Show only photos uploaded by me">
                 <Label className={"userPhotosLabel"}>
                     <FontAwesomeIcon icon={faUserCheck} style={{ margin: "auto 5px" }} />
                     <Toggle
-                        disabled={!this.props.loggedInUser ? true : false}
+                        // disabled={!this.props.loggedInUser ? true : false}
                         id="userPhotosToggle"
                         name="userPhotos"
                         value="userPhotos"

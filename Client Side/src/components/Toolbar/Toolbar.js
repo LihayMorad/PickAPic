@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Logo from './Logo/Logo';
-import SearchInput from './SearchInput/SearchInput';
 import UserPhotos from './UserPhotos/UserPhotos';
 import Upload from './Upload/Upload';
 import Filters from './Filters/Filters';
 import RadiusSlider from './RadiusSlider/RadiusSlider';
+import SearchInput from './SearchInput/SearchInput'
 import LoginRegister from './LoginRegister/LoginRegister';
 import { Collapse, Navbar, NavbarToggler, Nav, NavItem } from 'reactstrap';
 
@@ -14,7 +14,7 @@ import './Toolbar.css';
 class Toolbar extends Component {
 
     state = {
-        isOpen: false,
+        isOpen: false
     };
 
     componentDidMount() {
@@ -31,7 +31,7 @@ class Toolbar extends Component {
 
                 <Navbar color="dark" dark expand="xl" id="navbarMain">
 
-                    {/* LOGO */} {/* SHOULD BE RENDRED ON ALL PAGES */}
+                    {/* LOGO */}
                     <Logo />
 
                     <NavbarToggler onClick={this.toggleMobileToolbar} />
@@ -41,27 +41,27 @@ class Toolbar extends Component {
                         <Nav navbar className="mr-auto" >
 
                             {/* Search Location Input */}
-                            <NavItem>
+                            {this.props.location.pathname === '/' && <NavItem>
                                 <SearchInput />
-                            </NavItem>
+                            </NavItem>}
 
 
                             {/* Categories (Filters) Button */}
-                            <NavItem className="navBtn">
+                            {this.props.location.pathname === '/' && <NavItem className="navBtn">
                                 <Filters />
-                            </NavItem>
+                            </NavItem>}
 
 
                             {/* Search by radius */}
-                            <NavItem className="navBtn">
+                            {this.props.location.pathname === '/' && <NavItem className="navBtn">
                                 <RadiusSlider />
-                            </NavItem>
+                            </NavItem>}
 
 
                             {/* Show only logged in user photos */}
-                            <NavItem className="navBtn">
+                            {this.props.location.pathname === '/' && <NavItem className="navBtn">
                                 <UserPhotos />
-                            </NavItem>
+                            </NavItem>}
 
 
                             {/* Upload Picture Button  */}
@@ -71,7 +71,7 @@ class Toolbar extends Component {
 
                         </Nav>
 
-                        {/* Login/Register Button  */} {/* SHOULD BE RENDRED ON ALL PAGES */}
+                        {/* Login/Register Button  */}
                         <NavItem className="navBtn">
                             <LoginRegister />
                         </NavItem>
