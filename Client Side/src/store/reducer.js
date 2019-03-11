@@ -34,8 +34,9 @@ const reducer = (state = initialState, action) => {
                 for (const filter in updatedFiltersArray) {
                     if (filter !== "AllFilters" && updatedFiltersArray[filter]) { checked++; }
                 }
-                updatedFiltersArray["AllFilters"] = checked === 7 ? true : false;
+                updatedFiltersArray["AllFilters"] = checked === Object.keys(updatedFiltersArray).length-1 ? true : false;
             }
+            console.table(updatedFiltersArray);
             return { ...state, filtersArray: updatedFiltersArray };
         case actionTypes.CHANGE_LOGGED_IN_USER:
             return { ...state, loggedInUser: action.username };

@@ -1,4 +1,6 @@
-/* Modal */
+.modal-header {
+    padding: 7px 7px !important;
+}
 
 .modal-body {
     padding: 0px 0px !important;
@@ -7,39 +9,28 @@
     border-bottom: 2px solid #343a40;
 }
 
-.modal-header {
-    padding: 7px 7px !important;
-    display: unset !important;
+.modal-fullscreen {
+    min-width: 94%;
+    max-height: 90%;
 }
 
-.modal-dialog, .modal-content {
-    min-width: 94%;
-    max-height: 90vh;
+#modalIMG {
+    max-height: 80vh;
 }
 
 .modal-footer {
     padding: 0px 2px !important;
 }
 
-.modalHeaderCloseBtn {
-    float: right;
-}
-
-.modalFooterCloseBtn {
-    display: flex;
-    justify-content: flex-end;
-    padding: 5px;
-    margin-left: auto;
-}
-
-.modalBodyImg {
-    max-height: 800px;
-}
-
-.ModalFooterDetailsRow {
+#ModalFooterDetailsRow {
     display: flex;
     width: 100%;
     border: none;
+}
+
+.modalFooterCloseBtn {
+    margin: 3px;
+    margin-left: auto !important;
 }
 
 .detailElem {

@@ -1,4 +1,4 @@
-.userPhotosLabel {
+#userPhotosLabel {
     display: flex;
     align-items: center;
     color: white;
@@ -13,7 +13,7 @@
     height: 38px;
 }
 
-.userPhotosLabel:hover {
+#userPhotosLabel:hover {
     background-color: rgb(98, 0, 255);
     transition: 0.4s;
     border-color: white;

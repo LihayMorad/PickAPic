@@ -80,42 +80,42 @@ class FullsizeMarker extends PureComponent {
             this.getPhotoDetails();
 
         return (
-            <Modal
+            
+                <Modal className={"modal-fullscreen"}
+                    // size="lg"
+                    isOpen={this.props.isOpen}
+                    toggle={this.props.toggleModal}
+                    centered>
 
-                isOpen={this.props.isOpen}
-                toggle={this.props.toggleModal}
-                centered>
-
-                <ModalHeader style={{ border: 'none' }}>
-                    <div>
+                    <ModalHeader 
+                        style={{ border: 'none' }} 
+                        toggle={this.props.toggleModal}>
                         {this.state.description}
-                        <Button size="sm" className={"modalHeaderCloseBtn"} color="secondary" onClick={this.props.toggleModal}>X</Button>
-                    </div>
-                </ModalHeader>
+                    </ModalHeader>
 
-                <ModalBody>
-                    <img className={"img-fluid modalBodyImg"} src={this.state.photoURL} alt="full screen"></img>
-                </ModalBody>
+                    <ModalBody>
+                        <img id={"modalIMG"} className={"img-fluid"} src={this.state.photoURL} alt="full screen"></img>
+                    </ModalBody>
 
-                <ModalFooter style={{ border: 'none' }}>
-                    <div className={"ModalFooterDetailsRow"}>
-                        <div className={"detailElem"}><strong>Uploaded by: </strong>{this.state.username}</div>
-                        <div className={"detailElem"}><strong>Uploaded at: </strong>{this.state.uploaddate}</div>
-                        <div className={"detailElem"}><strong>Filter: </strong>{this.state.filter}</div>
-                        <div className={"detailElem"}><strong>ManualGPS: </strong>{this.state.manualGPS ? "Yes" : "No"}</div>
+                    <ModalFooter style={{ border: 'none' }}>
+                        <div id={"ModalFooterDetailsRow"}>
+                            <div className={"detailElem"}><strong>Uploaded by: </strong>{this.state.username}</div>
+                            <div className={"detailElem"}><strong>Uploaded at: </strong>{this.state.uploaddate}</div>
+                            <div className={"detailElem"}><strong>Filter: </strong>{this.state.filter}</div>
+                            <div className={"detailElem"}><strong>ManualGPS: </strong>{this.state.manualGPS ? "Yes" : "No"}</div>
 
-                        <div className={"modalFooterCloseBtn"}>
-                            <Button color="danger" title="Delete this photo"
-                                onClick={() => {
-                                    if (window.confirm("Are you sure you want to delete this photo permanently?"))
-                                        this.handleDeletePhoto();
-                                }}><FontAwesomeIcon icon={faTrash} /></Button>
-                            {/* <Button color="secondary" onClick={this.props.toggleModal}>Close</Button> */}
-                        </div>
-                    </div>
-                </ModalFooter>
+                                <Button className={"modalFooterCloseBtn"}
+                                    color="danger" 
+                                    title="Delete this photo"
+                                    onClick={() => {
+                                        if (window.confirm("Are you sure you want to delete this photo permanently?"))
+                                            this.handleDeletePhoto();
+                                    }}><FontAwesomeIcon icon={faTrash} />
+                                </Button>
+                            </div>
+                    </ModalFooter>
 
-            </Modal>
+                </Modal>
         );
     }
 

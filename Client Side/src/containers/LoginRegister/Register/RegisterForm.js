@@ -60,7 +60,9 @@ class RegisterForm extends Component {
                 <p className="p1" onClick={this.redirectToLogin}>Already A User?</p>
             </div>
         );
+
     }
+    
 }
 
 export default RegisterForm;

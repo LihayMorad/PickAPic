@@ -7,17 +7,15 @@ import { connect } from 'react-redux';
 
 import FullsizeMarker from '../FullsizeMarker/FullsizeMarker';
 
-// main https://www.npmjs.com/package/google-maps-react
+// mlibrary https://www.npmjs.com/package/google-maps-react
 // https://scotch.io/tutorials/react-apps-with-the-google-maps-api-and-google-maps-react
 // more details https://www.fullstackreact.com/articles/how-to-write-a-google-maps-react-component/#the-map-container-component
-
-// some photo id 34454ef51b274bf1aadddb9a2a0d15c4
-// http://localhost/webapplication1/api/numOfPhotos?neX=87.8672106462741&neY=178.78821655000002&swX=-76.289758795137&swY=-126.01647094999998&rad=0&centerX=0&centerY=0
 
 const mapStyle = {
 	position: 'absolute',
 	width: '100%',
-	height: '100%'
+	height: '100%',
+	boxShadow: '1px 1px 25px rgba(0, 0, 0, 0.35)'
 }
 
 const mapContainerStyle = {

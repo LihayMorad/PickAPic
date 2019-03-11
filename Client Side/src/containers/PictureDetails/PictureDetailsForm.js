@@ -11,6 +11,7 @@ import './PictureDetailsForm.css';
 const mapStyle = {
     position: 'absolute',
     width: '100%',
+    boxShadow: '1px 1px 25px rgba(0, 0, 0, 0.35)'
 }
 
 const mapContainerStyle = {
@@ -81,14 +82,12 @@ class pictureDetailsForm extends Component {
             lat: clickEvent.latLng.lat(),
             lng: clickEvent.latLng.lng()
         }
-        // console.log('pictureDetailsForm -> onMapClicked -> photoLocation', photoLocation);
         this.setState({ photoLocation }, () => {
             // console.log(this.state); 
         });
     }
 
     render() {
-        // console.log("pictureDetailsForm -> render -> isexif:", this.props.location.state);
 
         let googleMap = "";
         let marker = "";
@@ -113,7 +112,6 @@ class pictureDetailsForm extends Component {
             </Map>;
         }
         if (this.state.redirect) {
-            // console.log("this.state.redirect");
             redirectToMap = <Redirect to={{ // was: Redirect *push* to...
                 pathname: '/',
                 state: { photoLocation: this.state.photoLocation }
@@ -122,14 +120,14 @@ class pictureDetailsForm extends Component {
 
         return (
             <div className="detailsPage">
-                <h1>Description Page</h1>
 
                 <div className="detailsDiv">
+                <h1>Photo Details</h1>
 
                     {this.props.location.state.image && <img className={"imgPreview"} alt={"preview"}
                         src={URL.createObjectURL(this.props.location.state.image)}></img>}
 
-                    <label htmlFor="photoDescription" className="detailsLabel">Enter photo description:</label>
+                    <label htmlFor="photoDescription" className="detailsLabel">Photo description:</label>
                     <input type="text" id="photoDescription" name="Description" className="descriptionInput"
                         placeholder="Enter photo description" onChange={this.handleDescriptionChange} />
 
@@ -161,7 +159,7 @@ class pictureDetailsForm extends Component {
 export default (GoogleApiWrapper({ apiKey: "AIzaSyBimObDCzrKYyVo9t9K1vZEqT7BmIvOCis" })(pictureDetailsForm));
 
 pictureDetailsForm.propTypes = {
-
+    google: PropTypes.object
 }
 
 Map.propTypes = {

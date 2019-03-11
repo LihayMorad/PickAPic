@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import LoginForm from './Login/LoginForm';
 import RegisterForm from './Register/RegisterForm';
-import './LoginRegisterFormContainer.css';
 
 class loginRegisterFormContainer extends Component {
 
@@ -35,7 +35,7 @@ class loginRegisterFormContainer extends Component {
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button color="secondary" outline onClick={this.props.toggleModal}>Close</Button>
+                        <Button className={"modalFooterCloseBtn"} color="secondary" outline onClick={this.props.toggleModal}>Close</Button>
                     </ModalFooter>
 
                 </Modal>

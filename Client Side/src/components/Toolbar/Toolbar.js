@@ -29,7 +29,7 @@ class Toolbar extends Component {
         return (
             <div>
 
-                <Navbar color="dark" dark expand="xl" id="navbarMain">
+                <Navbar color="dark" dark expand="xl">
 
                     {/* LOGO */}
                     <Logo />
@@ -59,7 +59,7 @@ class Toolbar extends Component {
 
 
                             {/* Show only logged in user photos */}
-                            {this.props.location.pathname === '/' && <NavItem className="navBtn">
+                            {this.props.location.pathname === '/' && <NavItem>
                                 <UserPhotos />
                             </NavItem>}
 
