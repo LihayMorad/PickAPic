@@ -1,10 +1,18 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+<<<<<<< HEAD
 ## Available Scripts
+=======
+***Currently I'm recreating this project with ReactJS in another [branch](https://github.com/LihayMorad/PickAPic/tree/recreate-with-react).***
+>>>>>>> master
 
 In the project directory, you can run:
 
+<<<<<<< HEAD
 ### `npm start`
+=======
+### A website for photographers to share and find hotspot photo locations.
+>>>>>>> master
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -17,13 +25,21 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+<<<<<<< HEAD
 ### `npm run build`
+=======
+> Client-Side: HTML, CSS and Javascript, jQuery, Ajax, Google Maps API.
+>>>>>>> master
 
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
+<<<<<<< HEAD
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
+=======
+> Server-Side: ASP .NET Web API with IIS Server - C#
+>>>>>>> master
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
