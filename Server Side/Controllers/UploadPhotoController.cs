@@ -95,7 +95,7 @@ namespace WebApplication1.Models
 
         private void savePhotoInServer(string ID, string username, string extension, int manualGps, double xCord, double yCord, string selectedFilter, string imgDesc)
         {
-            m_Conn = new MySqlConnection(Database.Connect());
+            m_Conn = new MySqlConnection(Security.ConnectionDetails());
 
             m_Conn.Open(); // open connection 
 
@@ -140,7 +140,7 @@ namespace WebApplication1.Models
             return false;
         }
 
-        private void changeOrientaion()//?
+        private void changeOrientaion()
         {
             var userCookie = Request.Headers.GetCookies("session").FirstOrDefault();
 
@@ -148,7 +148,7 @@ namespace WebApplication1.Models
             CookieState vals = userCookie["session"];
             string ID = HttpContext.Current.Application[vals["username"]].ToString();
 
-            m_Conn = new MySql.Data.MySqlClient.MySqlConnection(Database.Connect());
+            m_Conn = new MySqlConnection(Security.ConnectionDetails());
 
             m_Conn.Open(); // open connection 
 
@@ -183,7 +183,7 @@ namespace WebApplication1.Models
                 }
                 catch (Exception ex)
                 {
-                    //Do something
+                    FileIOUtilities.SaveErrorToLog(ex.ToString() + " FilePath: " + path);
                 }
             }
 
@@ -206,7 +206,7 @@ namespace WebApplication1.Models
                 }
                 catch (Exception ex)
                 {
-                    //Do something
+                    FileIOUtilities.SaveErrorToLog(ex.ToString() + " FilePath: " + path);
                 }
             }
         }

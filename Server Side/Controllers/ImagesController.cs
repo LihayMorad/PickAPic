@@ -42,13 +42,13 @@ namespace WebApplication1.Controllers
         //// Get all photos from server
         //// Builds table info to return to client
         [Route("api/numOfPhotos")]
-        public IEnumerable<QuickPhoto> GetnoOfphotos(double neX, double neY, double swX, double swY, int rad, double centerX, double centerY)
+        public IEnumerable<Photo> GetnoOfphotos(double neX, double neY, double swX, double swY, int rad, double centerX, double centerY)
         {
             MySqlConnection m_Conn;
             MySqlCommand m_Cmd;
             MySqlDataReader dataReader;
 
-            m_Conn = new MySqlConnection(Database.Connect());
+            m_Conn = new MySqlConnection(Security.ConnectionDetails());
             m_Conn.Open();
 
             if (rad == 0)
@@ -95,13 +95,13 @@ namespace WebApplication1.Controllers
 
             dataReader = m_Cmd.ExecuteReader();
 
-            List<QuickPhoto> lst = new List<QuickPhoto>();
+            List<Photo> lst = new List<Photo>();
 
             while (dataReader.Read())
             {
                 if (!dataReader.IsDBNull(2))
                 {
-                    QuickPhoto temp = new QuickPhoto(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetString(2), dataReader.GetDouble(3), dataReader.GetDouble(4), dataReader.GetDouble(5), dataReader.GetInt32(6), dataReader.GetString(7));
+                    Photo temp = new Photo(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetString(2), dataReader.GetDouble(3), dataReader.GetDouble(4), dataReader.GetDouble(5), dataReader.GetInt32(6), dataReader.GetString(7));
                     lst.Add(temp);
                 }
                 else
@@ -143,7 +143,7 @@ namespace WebApplication1.Controllers
             MySqlDataReader dataReader;
             string username = null;
 
-            m_Conn = new MySqlConnection(Database.Connect());
+            m_Conn = new MySqlConnection(Security.ConnectionDetails());
             m_Conn.Open();
 
             ////stored procedure
@@ -175,7 +175,7 @@ namespace WebApplication1.Controllers
             MySqlDataReader dataReader;
 
             //// delete photo from mysql
-            m_Conn = new MySqlConnection(Database.Connect());
+            m_Conn = new MySqlConnection(Security.ConnectionDetails());
             m_Conn.Open();
 
             ////stored procedure
@@ -201,7 +201,7 @@ namespace WebApplication1.Controllers
                 }
                 catch (Exception ex)
                 {
-                    //Do something
+                    FileIOUtilities.SaveErrorToLog(ex.ToString()+" FilePath: "+filepath);
                 }
             }
 
@@ -213,7 +213,7 @@ namespace WebApplication1.Controllers
                 }
                 catch (Exception ex)
                 {
-                    //Do something
+                    FileIOUtilities.SaveErrorToLog(ex.ToString() + " FilePath: " + filepath);
                 }
             }
         }
@@ -221,13 +221,13 @@ namespace WebApplication1.Controllers
         //// Get a row with the requested fields
         //// Builds table info and return it to client
         [Route("api/photodetails/{id}")]
-        public IEnumerable<PhotoDetails> GetPhotoDetails(String id)
+        public IEnumerable<Photo> GetPhotoDetails(String id)
         {
             MySqlConnection m_Conn;
             MySqlCommand m_Cmd;
             MySqlDataReader dataReader;
 
-            m_Conn = new MySqlConnection(Database.Connect());
+            m_Conn = new MySqlConnection(Security.ConnectionDetails());
             m_Conn.Open();
 
             ////stored procedure
@@ -239,11 +239,11 @@ namespace WebApplication1.Controllers
 
             dataReader = m_Cmd.ExecuteReader();
 
-            List<PhotoDetails> lst = new List<PhotoDetails>();
+            List<Photo> lst = new List<Photo>();
 
             while (dataReader.Read())
             {
-                PhotoDetails temp = new PhotoDetails(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetString(2), dataReader.GetString(3), dataReader.GetInt32(4), dataReader.GetDouble(5), dataReader.GetDouble(6));
+                Photo temp = new Photo(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetString(2), dataReader.GetString(3), dataReader.GetInt32(4), dataReader.GetDouble(5), dataReader.GetDouble(6));
                 lst.Add(temp);
             }
 

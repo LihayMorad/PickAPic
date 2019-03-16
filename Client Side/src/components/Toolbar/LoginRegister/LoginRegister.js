@@ -8,6 +8,8 @@ import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import LoginRegisterFormContainer from '../../../containers/LoginRegister/LoginRegisterFormContainer';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 import axios from 'axios';
 
@@ -22,9 +24,40 @@ class LoginRegister extends Component {
         buttonText: "Login/Register"
     }
 
-    toggleModal = () => {
-        this.setState({ modalIsOpen: !this.state.modalIsOpen });
+    logoutHandler = () => {
+        if (this.props.loggedInUser && this.state.isLogged) {
+            confirmAlert({
+                title: 'Logout',
+                message: 'Do you want to logout?',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => {
+                            localStorage.removeItem('access-token');
+                            this.setState({
+                                buttonText: "Login/Register",
+                                isLogged: false
+                            }, () => this.props.onUserLoggedInChange(""));
+                            return true;
+                        }
+                    },
+                    {
+                        label: 'No',
+                        onClick: () => { return false; }
+                    }
+                ]
+            })
+        }
+
     }
+
+    toggleModal = () => {
+        this.logoutHandler();
+        if (!this.state.isLogged && !this.props.loggedInUser) {
+            this.setState({ modalIsOpen: !this.state.modalIsOpen });
+        }
+    }
+
 
     toggleUser = username => {
         if (username) {
@@ -36,7 +69,7 @@ class LoginRegister extends Component {
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         // console.log('[LoginRegister] componentWillMount');
 
         const localStorageAccessToken = localStorage.getItem("access-token");
@@ -52,8 +85,6 @@ class LoginRegister extends Component {
                 data: accessToken
             })
                 .then(response => {
-                    // console.log("[CheckAccessToken] response.data - username: ", response.data);
-                    // console.log(response);
                     this.toggleUser(response.data);
                 })
                 .catch(error => {

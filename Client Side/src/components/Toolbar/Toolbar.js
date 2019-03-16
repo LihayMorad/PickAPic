@@ -66,7 +66,7 @@ class Toolbar extends Component {
 
                             {/* Upload Picture Button  */}
                             <NavItem className="navBtn">
-                                <Upload />
+                                <Upload history={this.props.history}/>
                             </NavItem>
 
                         </Nav>

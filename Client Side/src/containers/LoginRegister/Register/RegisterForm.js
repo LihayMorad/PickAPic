@@ -4,8 +4,11 @@ import axios from 'axios';
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
 import avatar from '../../../assets/loginRegister.png';
 import './RegisterForm.css';
+import SHA256 from 'sha256';
 
 class RegisterForm extends Component {
+
+    hashPassword
 
     onSubmitHander = (event) => {
 
@@ -14,9 +17,7 @@ class RegisterForm extends Component {
         const username = event.target.txtUser.value;
         const registerInfo = new URLSearchParams();
         registerInfo.append('username', event.target.txtUser.value);
-        registerInfo.append('password', event.target.txtPass.value);
-
-        // console.log(event.target.txtUser.value, event.target.txtPass.value);
+        registerInfo.append('password', SHA256(event.target.txtPass.value));
 
         axios({
             method: 'POST',
@@ -25,13 +26,11 @@ class RegisterForm extends Component {
             data: registerInfo
         })
             .then((response) => {
-                // console.log('response', response);
                 localStorage.setItem('access-token', response.data);
                 this.props.handleLoggedUser(username);
                 alert("Hi " + username + ", you have been successfully registered! You're logged in.");
             })
             .catch((error) => {
-                // console.error('error', error);
                 alert("Username Already Exists! Please try again.")
             });
     }
@@ -62,7 +61,7 @@ class RegisterForm extends Component {
         );
 
     }
-    
+
 }
 
 export default RegisterForm;

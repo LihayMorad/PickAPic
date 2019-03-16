@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using MySql.Data.MySqlClient;
 using WebApplication1.Models;
-using System.Web.SessionState;
 using System.Web;
-using System.Net.Http.Headers;
-using System.Collections.Specialized;
-using Newtonsoft.Json.Linq;
 
 namespace WebApplication1.Controllers
 {
@@ -19,7 +13,8 @@ namespace WebApplication1.Controllers
         public MySqlConnection Conn;
         public MySqlCommand Cmd;
         public MySqlDataReader Reader;
-        public String QueryStr;
+        public string QueryStr;
+        private string key = Security.GetKey();
 
         // login method
         [Route("Login")]
@@ -30,7 +25,7 @@ namespace WebApplication1.Controllers
 
             if (loginUser(user.Username, user.Password))
             {
-                String guid = Guid.NewGuid().ToString();
+                string guid = Guid.NewGuid().ToString();
                 response.Content = new StringContent(guid);
                 HttpContext.Current.Application[user.Username] = guid;
                 response.StatusCode = HttpStatusCode.OK;
@@ -75,10 +70,11 @@ namespace WebApplication1.Controllers
         }
 
         //// Check if username and password are correct for login
-        private bool loginUser(string username, string password)
+        private bool loginUser(string username, string recievedPassword)
         {
-            bool userFound = false;
-            Conn = new MySqlConnection(Database.Connect());
+            bool correctUser = false;
+            string encryptedPassword = Security.ComputeSha256Hash(recievedPassword);
+            Conn = new MySqlConnection(Security.ConnectionDetails());
             Conn.Open();
 
             ////stored procedure
@@ -87,23 +83,25 @@ namespace WebApplication1.Controllers
             Cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             Cmd.Parameters.AddWithValue("username", username);
-            Cmd.Parameters.AddWithValue("pass", password);
+            Cmd.Parameters.AddWithValue("pass", encryptedPassword);
             Reader = Cmd.ExecuteReader();
 
             if (Reader.HasRows)
             {
-                userFound = true;
+                correctUser = true;
             }
 
-            Reader.Close();  
+            Reader.Close();
             Conn.Close();
 
-            return userFound;
+            return correctUser;
         }
 
         //// Update mysql database with new user if successful
         private bool registerUser(string username, string password)
         {
+            string encryptedPassword = Security.ComputeSha256Hash(password);
+
             if (checkUsernameAvailablity(username))
             {
                 return false;
@@ -117,7 +115,7 @@ namespace WebApplication1.Controllers
             Cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             Cmd.Parameters.AddWithValue("username", username);
-            Cmd.Parameters.AddWithValue("pass", password);
+            Cmd.Parameters.AddWithValue("pass", encryptedPassword);
             Cmd.Parameters.AddWithValue("permission", "User");
             Cmd.Parameters.AddWithValue("rating", 5);
 
@@ -132,7 +130,7 @@ namespace WebApplication1.Controllers
         {
             bool userExists = false;
 
-            Conn = new MySqlConnection(Database.Connect());
+            Conn = new MySqlConnection(Security.ConnectionDetails());
 
             Conn.Open();
 

@@ -21,10 +21,9 @@ class Upload extends Component {
     }
 
     //// handler which activates when a picture is uploaded
-    handleImageUpload = (file) => {
-        // console.log('event: ', file[0]);
+    handleImageUpload = (files) => {
 
-        if (file[0]) {
+        if (files[0]) {
             const localStorageAccessToken = localStorage.getItem("access-token");
             if (localStorageAccessToken) {
                 const accessToken = new URLSearchParams();
@@ -39,11 +38,11 @@ class Upload extends Component {
                     .then(response => { // logged in
                         // console.log("[CheckAccessToken] response.data - username: ", response.data);
 
-                        if (file[0].type === "image/jpeg") { ////exif library that extracts gps data
-                            Exif.getData(file[0], () => {
+                        if (files[0].type === "image/jpeg") { ////exif library that extracts gps data
+                            Exif.getData(files[0], () => {
 
-                                const lat = Exif.getTag(file[0], 'GPSLatitude');
-                                const lng = Exif.getTag(file[0], 'GPSLongitude');
+                                const lat = Exif.getTag(files[0], 'GPSLatitude');
+                                const lng = Exif.getTag(files[0], 'GPSLongitude');
                                 if (lat !== undefined && lng !== undefined) {
                                     const latFormatted = this.convertToNum(lat);
                                     const lngFormatted = this.convertToNum(lng);
@@ -60,7 +59,7 @@ class Upload extends Component {
                             });
                             this.setState({
                                 uploaded: true,
-                                file: file[0]
+                                file: files[0]
                             });
                         } else // file.type != JPG/JPEG
                             alert("Only 'JPG/JPEG' files are allowed to upload!");
@@ -94,11 +93,12 @@ class Upload extends Component {
                             {...getRootProps()} className={"btn, btnDanger"} htmlFor="my-file-selector"
                             id="uploadButton" title="Upload a picture">
 
-                            <Input {...getInputProps()} id="my-file-selector" type="file" accept="image/jpeg"
+                            <Input id="my-file-selector" type="file" accept="image/jpeg"
                                 onChange={(event) => {
                                     // event.persist();
                                     this.handleImageUpload(event.target.files);
-                                }} ></Input>
+                                }}>
+                            </Input>
                             <FontAwesomeIcon icon={faCloudUploadAlt} /> Upload
                 </label>
                     )}

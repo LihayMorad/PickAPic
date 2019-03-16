@@ -11,6 +11,7 @@
     "google-maps-react": "^2.0.2",
     "rc-slider": "^8.6.1",
     "react": "^16.6.3",
+    "react-confirm-alert": "^2.3.0",
     "react-dom": "^16.6.3",
     "react-dropzone": "^9.0.0",
     "react-redux": "^6.0.0",
@@ -18,7 +19,8 @@
     "react-scripts": "2.1.1",
     "react-toggle": "^4.0.2",
     "reactstrap": "^6.5.0",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "sha256": "^0.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,5 +36,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "homepage": "."
 }

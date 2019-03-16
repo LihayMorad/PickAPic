@@ -4,19 +4,18 @@ import axios from 'axios';
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
 import avatar from '../../../assets/loginRegister.png';
 import './LoginForm.css';
+import SHA256 from 'sha256';
+
 
 class LoginForm extends Component {
 
     onSubmitHander = event => {
-        // console.log('[localStorage] access-token', localStorage.getItem("access-token"));
         event.preventDefault();
 
         const username = event.target.txtUser.value;
         const loginInfo = new URLSearchParams();
         loginInfo.append('username', event.target.txtUser.value);
-        loginInfo.append('password', event.target.txtPass.value);
-
-        // console.log(event.target.txtUser.value, event.target.txtPass.value);
+        loginInfo.append('password', SHA256(event.target.txtPass.value));
 
         axios({
             method: 'POST',
@@ -25,13 +24,11 @@ class LoginForm extends Component {
             data: loginInfo
         })
             .then(response => {
-                // console.log('response', response);
                 localStorage.setItem('access-token', response.data);
                 this.props.handleLoggedUser(username);
                 alert("Hi " + username + ", you're logged in.");
             })
             .catch(error => {
-                // console.error('error', error);
                 alert("Wrong Username/Password! Please try again.");
             });
     }
