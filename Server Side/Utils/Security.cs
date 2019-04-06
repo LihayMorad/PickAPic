@@ -5,28 +5,8 @@ using System.Text;
 
 namespace WebApplication1
 {
-    public sealed class Security
+    public class Security
     {
-        private static Security instance = null;
-        private static readonly object padlock = new object();
-
-        Security() { }
-
-        public static Security Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new Security();
-                    }
-
-                    return instance;
-                }
-            }
-        }
 
         public static string ConnectionDetails()
         {

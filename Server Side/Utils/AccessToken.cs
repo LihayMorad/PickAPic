@@ -6,28 +6,8 @@ using WebApplication1.Models;
 
 namespace WebApplication1
 {
-    public sealed class AccessToken
+    public class AccessToken
     {
-        private static AccessToken instance = null;
-        private static readonly object padlock = new object();
-
-        AccessToken() { }
-
-        public static AccessToken Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new AccessToken();
-                    }
-
-                    return instance;
-                }
-            }
-        }
 
         public static HttpResponseMessage CheckAccessToken([FromBody] MySession accessToken)
         {

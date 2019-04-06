@@ -4,28 +4,8 @@ using System.IO;
 
 namespace WebApplication1
 {
-    public sealed class FileIOUtilities
+    public class FileIOUtilities
     {
-        private static FileIOUtilities instance = null;
-        private static readonly object padlock = new object();
-
-        FileIOUtilities() { }
-
-        public static FileIOUtilities Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new FileIOUtilities();
-                    }
-
-                    return instance;
-                }
-            }
-        }
 
         public static string ReadLocalFile(string path, string selectedToken)
         {
