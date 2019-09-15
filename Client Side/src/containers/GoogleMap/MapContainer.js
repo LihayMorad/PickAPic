@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import FullsizeMarker from '../FullsizeMarker/FullsizeMarker';
 
-// mlibrary https://www.npmjs.com/package/google-maps-react
+// library https://www.npmjs.com/package/google-maps-react
 // https://scotch.io/tutorials/react-apps-with-the-google-maps-api-and-google-maps-react
 // more details https://www.fullstackreact.com/articles/how-to-write-a-google-maps-react-component/#the-map-container-component
 
@@ -48,17 +48,13 @@ class MapContainer extends Component {
 		else { console.log('Geolocation is not supported for this Browser/OS.'); }
 	}
 
-	onMapReady = (mapProps, map) => {
-		// console.log("[MapContainer] > onMapReady");
-		this.setState({ map: map, mapProps: mapProps }, () => { this.getGeoLocation(); });
-	}
+	onMapReady = (mapProps, map) => { this.setState({ map: map, mapProps: mapProps }, () => { this.getGeoLocation(); }); }
 
 	onMapIdle = (mapProps, map) => {
-		// console.log("​[MapContainer] > onMapIdle");
 
 		let mapCenter = {};
 		let mapBounds = {};
-		let currRadius = this.props.radius; // from store ("global state")
+		let currRadius = this.props.radius;
 
 		const mapParams = {};
 
@@ -78,7 +74,6 @@ class MapContainer extends Component {
 			mapParams.rad = currRadius;
 			mapParams.centerX = mapCenter.lat;
 			mapParams.centerY = mapCenter.lng;
-			// console.log(mapParams);
 
 			this.getMarkers(mapParams);
 		}
@@ -86,14 +81,9 @@ class MapContainer extends Component {
 	}
 
 	getMarkers = mapParams => {
-		// console.log("​[MapContainer] -> mapParams", mapParams)
-		// console.log('[MapContainer] > getMarkers > this.props.filtersArray:', this.props.filtersArray);
-		// console.log('[MapContainer] > getMarkers');
 
 		axios('http://localhost/webapplication1/api/numOfPhotos/', { params: mapParams })
 			.then(response => {
-				// console.table(response.data);
-				// console.log(response.data);
 				let userPhotosToShow = this.props.showOnlyCurrentUserPhotos ? this.props.loggedInUser : null;
 
 				const markers = response.data.filter(marker => {
@@ -131,19 +121,11 @@ class MapContainer extends Component {
 		});
 	}
 
-	onInfoWindowClose = () => {
-		this.setState({ showingInfoWindow: false });
-	}
+	onInfoWindowClose = () => { this.setState({ showingInfoWindow: false }); }
 
-	componentDidMount() {
-		// console.log('[MapContainer] > componentDidMount');
-	}
+	componentWillUnmount() { navigator.geolocation.clearWatch(this.state.watchID); }
 
-	componentWillUnmount() {
-		navigator.geolocation.clearWatch(this.state.watchID);
-	}
-
-	componentDidUpdate(prevProps, prevState) { // @@@@@@@@@@@@@@@@@@@@ NEED TO DO IT REDUX-STYLE, WHENEVER STORE CHANGE, TRIGGER IDLE
+	componentDidUpdate(prevProps) {
 		if (prevProps.filtersArray !== this.props.filtersArray
 			|| prevProps.radius !== this.props.radius
 			|| prevProps.showOnlyCurrentUserPhotos !== this.props.showOnlyCurrentUserPhotos) {
@@ -152,7 +134,6 @@ class MapContainer extends Component {
 	}
 
 	render() {
-		// console.log('[MapContainer] render');
 
 		return (
 
@@ -164,7 +145,6 @@ class MapContainer extends Component {
 					containerStyle={mapContainerStyle}
 					initialCenter={{ lat: 32.109333, lng: 34.855499 }}
 					zoom={2}
-					// bounds={bounds}
 					onClick={() => { this.onInfoWindowClose(); }}
 					onReady={this.onMapReady}
 					onIdle={this.onMapIdle}>
@@ -193,11 +173,7 @@ class MapContainer extends Component {
 
 }
 
-// asks for props from store
-const mapStateToProps = state => {
-	// console.log("​[MapContainer] > mapStateToProps", state);
-	return state;
-}
+const mapStateToProps = state => state;
 
 export default connect(mapStateToProps)(GoogleApiWrapper({ apiKey: "AIzaSyBimObDCzrKYyVo9t9K1vZEqT7BmIvOCis" })(MapContainer))
 

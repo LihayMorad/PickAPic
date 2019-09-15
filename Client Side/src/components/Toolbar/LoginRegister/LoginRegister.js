@@ -58,7 +58,6 @@ class LoginRegister extends Component {
         }
     }
 
-
     toggleUser = username => {
         if (username) {
             this.setState({
@@ -70,14 +69,11 @@ class LoginRegister extends Component {
     }
 
     componentDidMount() {
-        // console.log('[LoginRegister] componentWillMount');
-
         const localStorageAccessToken = localStorage.getItem("access-token");
         if (localStorageAccessToken) {
             const accessToken = new URLSearchParams();
             accessToken.append('accessToken', localStorageAccessToken);
 
-            // for (const param of accessToken) console.log('[LoginRegister]', param);
             axios({
                 method: 'POST',
                 url: 'http://localhost/webapplication1/CheckAccessToken',
@@ -87,25 +83,15 @@ class LoginRegister extends Component {
                 .then(response => {
                     this.toggleUser(response.data);
                 })
-                .catch(error => {
-                    // console.error('[CheckAccessToken] ERROR ~~Login token not found~~', error);
-                });
+                .catch(error => { });
         }
-    }
-
-    componentDidUpdate() {
-        // console.log('[LoginRegister] componentDidUpdate');
     }
 
     render() {
 
         return (
             <div>
-                <Button
-                    color="primary"
-                    id="loginButton"
-                    title="Login/Register"
-                    onClick={this.toggleModal}>
+                <Button color="primary" id="loginButton" title="Login/Register" onClick={this.toggleModal}>
                     <FontAwesomeIcon icon={faUser} /> {this.state.buttonText}
                 </Button>
 
@@ -119,11 +105,9 @@ class LoginRegister extends Component {
     }
 }
 
-const mapStateToProps = state => { // console.log("​mapStateToProps");
-    return state;
-}
+const mapStateToProps = state => state;
 
-const mapDispatchToProps = dispatch => { // console.log("mapDispatchToProps");
+const mapDispatchToProps = dispatch => {
     return {
         onUserLoggedInChange: (username) => dispatch({ type: actionTypes.CHANGE_LOGGED_IN_USER, username: username })
     };

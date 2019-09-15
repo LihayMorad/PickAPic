@@ -22,7 +22,8 @@ namespace WebApplication1
                     return response;
                 }
             }
-            // else a bad request will be returned
+            
+            // else
             response.StatusCode = HttpStatusCode.BadRequest;
             response.Content = new StringContent("Incorrect username/password !");
 

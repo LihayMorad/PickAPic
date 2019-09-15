@@ -16,7 +16,6 @@ namespace WebApplication1.Controllers
         public string QueryStr;
         private string key = Security.GetKey();
 
-        // login method
         [Route("Login")]
         [HttpPost]
         public HttpResponseMessage LoginUser([FromBody] User user)
@@ -32,14 +31,13 @@ namespace WebApplication1.Controllers
                 return response;
             }
 
-            // else a bad request will be returned
+            // else
             response.StatusCode = HttpStatusCode.BadRequest;
             response.Content = new StringContent("Incorrect username/password !");
 
             return response;
         }
 
-        // register method
         [Route("Registration")]
         [HttpPost]
         public HttpResponseMessage RegisterUser([FromBody] User user)
@@ -55,7 +53,7 @@ namespace WebApplication1.Controllers
                 return response;
             }
 
-            // else  a bad request will be returned
+            // else
             response.StatusCode = HttpStatusCode.BadRequest;
             response.Content = new StringContent("There was a problem with your registration");
 
@@ -77,11 +75,9 @@ namespace WebApplication1.Controllers
             Conn = new MySqlConnection(Security.ConnectionDetails());
             Conn.Open();
 
-            ////stored procedure
             Cmd = new MySqlCommand("login", Conn);
 
             Cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
             Cmd.Parameters.AddWithValue("username", username);
             Cmd.Parameters.AddWithValue("pass", encryptedPassword);
             Reader = Cmd.ExecuteReader();
@@ -109,11 +105,9 @@ namespace WebApplication1.Controllers
 
             Conn.Open();
 
-            ////stored procedure
             Cmd = new MySqlCommand("registerUser", Conn);
 
             Cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
             Cmd.Parameters.AddWithValue("username", username);
             Cmd.Parameters.AddWithValue("pass", encryptedPassword);
             Cmd.Parameters.AddWithValue("permission", "User");
@@ -134,11 +128,9 @@ namespace WebApplication1.Controllers
 
             Conn.Open();
 
-            ////stored procedure
             Cmd = new MySqlCommand("checkUsernameAvailablity", Conn);
 
             Cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
             Cmd.Parameters.AddWithValue("username", username);
 
             Reader = Cmd.ExecuteReader();

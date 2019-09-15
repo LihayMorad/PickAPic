@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Tooltip from 'rc-tooltip';
 import Slider from 'rc-slider';
-// import { Button } from 'reactstrap';
 
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../store/actions';
@@ -46,20 +45,13 @@ const radiusSlider = props => {
                 handleStyle={sliderStyles}
                 onAfterChange={() => { props.onRadiusChange(Radius); }}
             />
-            {/* <Button id="radiusSliderToggle" outline size="sm"
-                title="Toggle search by radius ON/OFF (Not available when device's location turned off)">On/Off</Button> */}
         </div>
     );
 }
 
-// gets state from store
-const mapStateToProps = state => { // console.log("â€‹mapStateToProps");
-    return state;
-}
+const mapStateToProps = state => state;
 
-// onRadiusChange returns to props
-// dispatch triggers reducer 
-const mapDispatchToProps = dispatch => { // console.log("mapDispatchToProps");
+const mapDispatchToProps = dispatch => {
     return {
         onRadiusChange: (radius) => dispatch({ type: actionTypes.CHANGE_RADIUS, rad: radius })
     };

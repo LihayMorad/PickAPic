@@ -4,12 +4,7 @@ import { connect } from 'react-redux';
 import * as actionTypes from '../../../store/actions';
 
 import Filter from './Filter/Filter';
-import {
-    ButtonDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem
-} from 'reactstrap';
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -38,24 +33,22 @@ class Filters extends Component {
     handleFilterChange = filter => { this.props.onFiltersChange(filter.value, filter.checked); }
 
     render() {
-        // console.log('this.props: ', this.props.filtersArray);
 
         return (
             <div>
 
                 <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                     <DropdownToggle outline color="info" caret id="searchCategoriesButton">
-                        <FontAwesomeIcon icon={faFilter} /> Categories</DropdownToggle>
+                        <FontAwesomeIcon icon={faFilter} />Categories
+                    </DropdownToggle>
 
                     <DropdownMenu id="filtersDropdown">
                         <DropdownItem header>Choose Map Filters</DropdownItem>
                         <Filter {...AllFiltersFilter} checked={this.props.filtersArray[AllFiltersFilter.value]} onClick={e => { this.handleFilterChange(e.target) }} />
                         <DropdownItem divider />
-                        {/* PERFORMANCE ISSUE */}
                         {filters.map((filter) => <Filter key={filter.id} {...filter}
                             checked={this.props.filtersArray[filter.value]}
                             onClick={e => { this.handleFilterChange(e.target); }} />)}
-                        {/* PERFORMANCE ISSUE */}
                     </DropdownMenu>
                 </ButtonDropdown>
 
@@ -66,12 +59,10 @@ class Filters extends Component {
 }
 
 const mapStateToProps = state => {
-    // console.log("​mapStateToProps");
     return state;
 }
 
 const mapDispatchToProps = dispatch => {
-    // console.log("mapDispatchToProps");
     return {
         onFiltersChange: (filterName, isChecked) => dispatch({ type: actionTypes.CHANGE_FILTERS, filterName: filterName, isChecked: isChecked })
     };

@@ -11,10 +11,9 @@ class loginRegisterFormContainer extends Component {
         currentPage: "login"
     }
 
-    ////function to pass to child component for updating for the current page
+    // function to pass to child component for updating for the current page
     formSwitchHandler = currentPage => { this.setState({ currentPage: currentPage }); }
 
-    ////using conditional rendering. routing is no longer needed
     render() {
         return (
             <div>

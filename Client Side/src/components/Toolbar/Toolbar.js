@@ -17,13 +17,7 @@ class Toolbar extends Component {
         isOpen: false
     };
 
-    componentDidMount() {
-        // console.log('[Toolbar] componentDidMount');
-    }
-
-    toggleMobileToolbar = () => {
-        this.setState({ isOpen: !this.state.isOpen });
-    }
+    toggleMobileToolbar = () => { this.setState({ isOpen: !this.state.isOpen }); }
 
     render() {
         return (
@@ -66,7 +60,7 @@ class Toolbar extends Component {
 
                             {/* Upload Picture Button  */}
                             <NavItem className="navBtn">
-                                <Upload history={this.props.history}/>
+                                <Upload history={this.props.history} />
                             </NavItem>
 
                         </Nav>

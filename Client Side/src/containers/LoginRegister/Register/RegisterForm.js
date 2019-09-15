@@ -8,10 +8,7 @@ import SHA256 from 'sha256';
 
 class RegisterForm extends Component {
 
-    hashPassword
-
     onSubmitHander = (event) => {
-
         event.preventDefault();
 
         const username = event.target.txtUser.value;

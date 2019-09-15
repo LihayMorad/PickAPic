@@ -146,11 +146,8 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection(Security.ConnectionDetails());
             m_Conn.Open();
 
-            ////stored procedure
             m_Cmd = new MySqlCommand("getUserByPhotoId", m_Conn);
-
             m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
             m_Cmd.Parameters.AddWithValue("id", imgID);
 
             dataReader = m_Cmd.ExecuteReader();
@@ -174,15 +171,12 @@ namespace WebApplication1.Controllers
             MySqlCommand m_Cmd;
             MySqlDataReader dataReader;
 
-            //// delete photo from mysql
+            //// delete photo from DB
             m_Conn = new MySqlConnection(Security.ConnectionDetails());
             m_Conn.Open();
 
-            ////stored procedure
             m_Cmd = new MySqlCommand("deletePhoto", m_Conn);
-
             m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
             m_Cmd.Parameters.AddWithValue("id", id);
 
             dataReader = m_Cmd.ExecuteReader();
@@ -230,11 +224,8 @@ namespace WebApplication1.Controllers
             m_Conn = new MySqlConnection(Security.ConnectionDetails());
             m_Conn.Open();
 
-            ////stored procedure
             m_Cmd = new MySqlCommand("getPhotoDetails", m_Conn);
-
             m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
             m_Cmd.Parameters.AddWithValue("id", id);
 
             dataReader = m_Cmd.ExecuteReader();

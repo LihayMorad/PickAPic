@@ -25,7 +25,6 @@ class UserPhotos extends Component {
                 <Label id={"userPhotosLabel"}>
                     <FontAwesomeIcon icon={faUserCheck} style={{ margin: "auto 5px" }} />
                     <Toggle
-                        // disabled={!this.props.loggedInUser ? true : false}
                         id="userPhotosToggle"
                         name="userPhotos"
                         value="userPhotos"
@@ -39,11 +38,9 @@ class UserPhotos extends Component {
 
 }
 
-const mapStateToProps = state => { // console.log("​mapStateToProps");
-    return state;
-}
+const mapStateToProps = state => state;
 
-const mapDispatchToProps = dispatch => { // console.log("mapDispatchToProps");
+const mapDispatchToProps = dispatch => {
     return {
         onUserPhotosChange: (ischecked) => dispatch({ type: actionTypes.CHANGE_PHOTOS_TO_SHOW, isChecked: ischecked })
     };

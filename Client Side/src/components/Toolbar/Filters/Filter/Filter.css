@@ -6,8 +6,6 @@
 
 .filtersDropdownLabel {
     display: flex !important;
-    /* padding: 4px 12px !important; */
-    /* margin-bottom: 5px; */
 }
 
 .filtersDropdownLabel:hover {

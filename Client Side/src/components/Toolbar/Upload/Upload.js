@@ -13,14 +13,14 @@ import './Upload.css';
 class Upload extends Component {
 
     state = {
-        isExif: true, ////if exif data exists in the picture
+        isExif: true, // if exif data exists in the picture
         xCord: null,
         yCord: null,
-        uploaded: false, ////states if the picture was even uploaded to trigger the redirection
+        uploaded: false, // states if the picture was even uploaded to trigger the redirection
         file: null
     }
 
-    //// handler which activates when a picture is uploaded
+    // handler which activates when a picture is uploaded
     handleImageUpload = (files) => {
 
         if (files[0]) {
@@ -36,11 +36,9 @@ class Upload extends Component {
                     data: accessToken
                 })
                     .then(response => { // logged in
-                        // console.log("[CheckAccessToken] response.data - username: ", response.data);
 
-                        if (files[0].type === "image/jpeg") { ////exif library that extracts gps data
-                            Exif.getData(files[0], () => {
-
+                        if (files[0].type === "image/jpeg") {
+                            Exif.getData(files[0], () => { // exif library that extracts gps data
                                 const lat = Exif.getTag(files[0], 'GPSLatitude');
                                 const lng = Exif.getTag(files[0], 'GPSLongitude');
                                 if (lat !== undefined && lng !== undefined) {
@@ -75,7 +73,7 @@ class Upload extends Component {
         }
     }
 
-    ////function that converts the lat long arrays into single double values
+    // function that converts the lat long arrays into single double values
     convertToNum = (number) => {
         return (number[0].numerator + number[1].numerator /
             (60 * number[1].denominator) + number[2].numerator / (3600 * number[2].denominator));
@@ -103,8 +101,9 @@ class Upload extends Component {
                 </label>
                     )}
                 </Dropzone>
-                {
-                    this.state.uploaded ? <Redirect to={{ // was Redirect *push* to...
+
+                {this.state.uploaded
+                    ? <Redirect to={{
                         pathname: '/details',
                         state: {
                             isexif: this.state.isExif,
@@ -112,8 +111,9 @@ class Upload extends Component {
                             ycord: this.state.yCord,
                             image: this.state.file
                         }
-                    }} /> : null
-                }
+                    }} />
+                    : null
+                    }
             </div >
         );
     }

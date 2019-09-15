@@ -22,7 +22,7 @@ const mapContainerStyle = {
 class pictureDetailsForm extends Component {
 
     state = {
-        filter: "Other", // default
+        filter: "Other",
         description: "",
         redirect: false
     }
@@ -32,7 +32,6 @@ class pictureDetailsForm extends Component {
     handleFilterChange = event => { this.setState({ filter: event.target.value }); }
 
     handleFileUpload = () => {
-        // console.log('pictureDetailsForm -> fileUpload ->  this.props.location.state', this.props.location.state);
 
         const url = 'http://localhost/webapplication1/Upload';
         const formData = new FormData();
@@ -45,13 +44,13 @@ class pictureDetailsForm extends Component {
                     lng: this.props.location.state.ycord
                 }
             });
-            formData.append('xCord', this.props.location.state.xcord); //lat
-            formData.append('yCord', this.props.location.state.ycord); //lng
+            formData.append('xCord', this.props.location.state.xcord); // lat
+            formData.append('yCord', this.props.location.state.ycord); // lng
         }
         else { // image doesn't have GPS data
             if (this.state.photoLocation) {
-                formData.append('xCord', this.state.photoLocation.lat); //lat
-                formData.append('yCord', this.state.photoLocation.lng); //lng
+                formData.append('xCord', this.state.photoLocation.lat); // lat
+                formData.append('yCord', this.state.photoLocation.lng); // lng
             }
             else {
                 alert("Photo's GPS location wasn't provided, please click on the map where the photo was taken.");
@@ -64,27 +63,17 @@ class pictureDetailsForm extends Component {
 
         const config = { headers: { 'content-type': 'multipart/form-data' } };
 
-        // for (let pair of formData.entries()) {
-        //     console.log(pair[0] + ': ' + pair[1]);
-        // }
-
         post(url, formData, config)
-            .then(res => {
-                this.setState({ redirect: true }, () => alert("Upload successfully"));
-            })
+            .then(res => { this.setState({ redirect: true }, () => alert("Upload successfully")); })
             .catch(error => { alert(error.request.responseText); });
     }
 
     onMapClicked = (mapProps, map, clickEvent) => {
-        // console.log('pictureDetailsForm -> onMapClicked -> mapProps', mapProps);
-        // console.log('pictureDetailsForm -> onMapClicked -> map', map);
         const photoLocation = {
             lat: clickEvent.latLng.lat(),
             lng: clickEvent.latLng.lng()
         }
-        this.setState({ photoLocation }, () => {
-            // console.log(this.state); 
-        });
+        this.setState({ photoLocation });
     }
 
     render() {
@@ -122,7 +111,7 @@ class pictureDetailsForm extends Component {
             <div className="detailsPage">
 
                 <div className="detailsDiv">
-                <h1>Photo Details</h1>
+                    <h1>Photo Details</h1>
 
                     {this.props.location.state.image && <img className={"imgPreview"} alt={"preview"}
                         src={URL.createObjectURL(this.props.location.state.image)}></img>}
@@ -143,8 +132,9 @@ class pictureDetailsForm extends Component {
                         <option value="Other">Other</option>
                     </select>
 
-                    <Button color="primary" value="Upload" className="uploadBtn"
-                        onClick={this.handleFileUpload}>Upload </Button>
+                    <Button color="primary" value="Upload" className="uploadBtn" onClick={this.handleFileUpload}>
+                        Upload
+                    </Button>
                 </div>
 
                 {googleMap}

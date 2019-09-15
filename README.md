@@ -4,7 +4,7 @@
 
 This project was made during a **self-learning** course I took at my college.
 
-> **Client-Side**: ReactJS (+Redux), HTML, CSS, Google Maps API.
+> **Client-Side**: ReactJS (+Redux), HTML, CSS (+Reactstrap), Google Maps API.
 
 > **Server-Side**: ASP .NET Web API with IIS Server (C#).
 

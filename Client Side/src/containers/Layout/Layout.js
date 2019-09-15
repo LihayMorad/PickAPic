@@ -4,8 +4,6 @@ import Toolbar from '../../components/Toolbar/Toolbar';
 import MapContainer from '../GoogleMap/MapContainer';
 import Details from '../../containers/PictureDetails/PictureDetailsForm';
 
-import './Layout.css';
-
 class Layout extends Component {
 
     render() {

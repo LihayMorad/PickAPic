@@ -46,9 +46,7 @@ namespace WebApplication1.Models
 
             if (AccessToken.CheckAccessToken(token).StatusCode != HttpStatusCode.BadRequest)
             {
-
                 string username = AccessToken.searchUserByAccessToken(token.AccessToken);
-
                 var httpRequest = HttpContext.Current.Request;
 
                 foreach (string file in httpRequest.Files)
@@ -86,7 +84,7 @@ namespace WebApplication1.Models
                 return response;
             }
 
-            //else
+            // else
             response.StatusCode = HttpStatusCode.BadRequest;
             response.Content = new StringContent("Please login to upload photos");
 
@@ -99,9 +97,7 @@ namespace WebApplication1.Models
 
             m_Conn.Open(); // open connection 
 
-            ////stored procedure
             m_Cmd = new MySqlCommand("savePhoto", m_Conn);
-
             m_Cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             m_Cmd.Parameters.AddWithValue("id", ID);
@@ -127,7 +123,7 @@ namespace WebApplication1.Models
             return Guid.NewGuid().ToString("N");
         }
 
-        // check if logged in
+        // check if user is logged in
         public bool checkIfLoggedIn()
         {
             var userCookie = Request.Headers.GetCookies("session").FirstOrDefault();
@@ -144,13 +140,13 @@ namespace WebApplication1.Models
         {
             var userCookie = Request.Headers.GetCookies("session").FirstOrDefault();
 
-            // change to appliction
+            // change to application
             CookieState vals = userCookie["session"];
             string ID = HttpContext.Current.Application[vals["username"]].ToString();
 
             m_Conn = new MySqlConnection(Security.ConnectionDetails());
 
-            m_Conn.Open(); // open connection 
+            m_Conn.Open();
 
             m_QueryStr = "SELECT Path FROM gis.photodetails WHERE ID = '" + ID + "'";
             m_Cmd = new MySql.Data.MySqlClient.MySqlCommand(m_QueryStr, m_Conn);
